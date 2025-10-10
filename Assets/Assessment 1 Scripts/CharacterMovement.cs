@@ -10,48 +10,27 @@ public class CharacterMovement : MonoBehaviour
 	[SerializeField] private Transform m_RaycastPosition;
 	[SerializeField] private LayerMask m_GroundLayer;
 	private float m_InMove;
-    private PlayerControls m_ActionMap;
-    private bool m_IsGrounded;
+	private bool m_IsGrounded;
 
-    private void Awake()
-    {
-        m_ActionMap = new PlayerControls();
-
+	private void Awake()
+	{
 		m_RB = GetComponent<Rigidbody2D>();
-    }
+	}
 
-    #region Bindings
-    private void OnEnable()
-    {
-        m_ActionMap.Enable();
-
-        m_ActionMap.Default.MoveHoriz.performed += Handle_MovePerformed;
-        m_ActionMap.Default.MoveHoriz.canceled += Handle_MoveCancelled;
-        m_ActionMap.Default.Jump.performed += Handle_JumpPerformed;
-    }
-
-    private void OnDisable()
-    {
-        m_ActionMap.Disable();
-
-        m_ActionMap.Default.MoveHoriz.performed -= Handle_MovePerformed;
-        m_ActionMap.Default.MoveHoriz.canceled -= Handle_MoveCancelled;
-        m_ActionMap.Default.Jump.performed -= Handle_JumpPerformed;
-    }
-    #endregion
+	
 
     #region InputFunctions
 
-    private void Handle_MovePerformed(InputAction.CallbackContext context)
+    public void MovePerformed(float direction)
     {
-        m_InMove = context.ReadValue<float>();
+        m_InMove = direction;
     }
-    private void Handle_MoveCancelled(InputAction.CallbackContext context)
+    public void MoveCancelled()
     {
         m_InMove = 0f;
     }
 
-    private void Handle_JumpPerformed(InputAction.CallbackContext context)
+    public void JumpPerformed()
     {
         if (m_IsGrounded)
         {
