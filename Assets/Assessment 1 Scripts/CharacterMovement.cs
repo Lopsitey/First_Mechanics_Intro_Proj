@@ -15,15 +15,13 @@ public class CharacterMovement : MonoBehaviour
 	private float m_CoyoteTimeCounter;//the decrementing time left after leaving a ledge
 	[SerializeField] private float m_JumpDelayTime = 0.2f;//the delay after a jump is executed - the minimum being ~ 0.15 due to the coyote time 
 	
-	[Header("Miscellaneous")]
-	[SerializeField] private Transform m_RaycastPosition;
-	[SerializeField] private LayerMask m_GroundLayer;
+	private GroundSensor m_GroundSensor;
 	private float m_InMove;
-	private bool m_IsGrounded;
 
 	private void Awake()
 	{
 		m_RB = GetComponent<Rigidbody2D>();
+		m_GroundSensor=GetComponentInChildren<GroundSensor>();
 	}
 
 	
@@ -43,7 +41,7 @@ public class CharacterMovement : MonoBehaviour
     {
 	    if (!m_Jumped)
 	    {
-		    if (m_IsGrounded || m_CoyoteTimeCounter > 0f)
+		    if (m_GroundSensor.m_IsGrounded || m_CoyoteTimeCounter > 0f)
 		    {
 			    m_RB.AddForce(Vector2.up * m_JumpStrength, ForceMode2D.Impulse);
 			    m_CoyoteTimeCounter = 0f;
@@ -56,10 +54,9 @@ public class CharacterMovement : MonoBehaviour
     private void FixedUpdate()
 	{
 		m_RB.linearVelocityX = m_MoveSpeed * m_InMove;
-
-        m_IsGrounded = Physics2D.Raycast(m_RaycastPosition.position, Vector2.down, 0.1f, m_GroundLayer);
+		
         
-        if (m_IsGrounded)
+        if (m_GroundSensor.m_IsGrounded)
         {
 	        m_CoyoteTimeCounter=m_CoyoteTimeThreshold;
         }
@@ -72,6 +69,5 @@ public class CharacterMovement : MonoBehaviour
 		m_Jumped = true;
 		yield return new WaitForSeconds(delay);
 		m_Jumped = false;
-		
 	}
 }
