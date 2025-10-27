@@ -2,23 +2,43 @@ using UnityEngine;
 
 public class GroundSensor : MonoBehaviour
 {
-    [SerializeField] private Transform m_RaycastPosition;
     [SerializeField] private LayerMask m_GroundLayer;
-    public bool m_IsGrounded { get; private set; }
-
-    private void OnEnable()
+    [SerializeField] private Vector2 m_BoxSize = new Vector2(1,0.2f);
+    private RaycastHit2D m_HitBox;
+    public bool m_IsGrounded { get; private set; } = true;//on the ground by default
+    
+    private void OnEnable()//subscribe to the collision event
     {
-        CollisionDetector.CollisionEntered += Handle_CollisionEntered;
+        CollisionDetector.CollisionOverlap += CheckGround;
     }
     
-    private void OnDisable()
+    private void OnDisable()//unsubscribe from the collision event
     {
-        CollisionDetector.CollisionEntered -= Handle_CollisionEntered;
+        CollisionDetector.CollisionOverlap -= CheckGround;
+    }
+    
+    public void CheckGround()//also runs on collision event - checks if grounded
+    {
+        m_HitBox = Physics2D.BoxCast(transform.position-new Vector3(0,m_BoxSize.y/2,0), m_BoxSize, 0.0f, Vector2.down, 0f, m_GroundLayer);
+        m_IsGrounded= m_HitBox.collider;
     }
 
-    void Handle_CollisionEntered(bool isColliding)
+    public void SetGround(bool isGrounded)
     {
-        if (isColliding)
-            m_IsGrounded = Physics2D.BoxCast(m_RaycastPosition.position, Vector2.one, 0.1f, Vector2.down,0.1f, m_GroundLayer);
+        m_IsGrounded = isGrounded;
+    }
+
+    void OnDrawGizmos()//Visualizes the boxcast when the gizmos overlay is enabled
+    {
+        Gizmos.color = m_IsGrounded ? Color.green : Color.red;
+        
+        Gizmos.DrawWireCube(transform.position-new Vector3(0,m_BoxSize.y/2,0), m_BoxSize);//Draws the boxcast area
     }
 }
+
+
+    
+
+   
+
+   

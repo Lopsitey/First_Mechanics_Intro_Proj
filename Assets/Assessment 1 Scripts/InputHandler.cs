@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class InputHandler : MonoBehaviour
 {
     [SerializeField] private CharacterMovement m_CharacterMovement;
@@ -34,11 +35,11 @@ public class InputHandler : MonoBehaviour
     #region InputFunctions
     private void Handle_MovePerformed(InputAction.CallbackContext context)
     {
-        m_CharacterMovement.MovePerformed(context.ReadValue<float>());
+        m_CharacterMovement.SetInMove(context.ReadValue<float>());
     }
     private void Handle_MoveCancelled(InputAction.CallbackContext context)
     {
-        m_CharacterMovement.MoveCancelled();
+        m_CharacterMovement.SetInMove(0);
     }
 
     private void Handle_JumpPerformed(InputAction.CallbackContext context)
