@@ -19,7 +19,7 @@ public class GroundSensor : MonoBehaviour
     
     public void CheckGround()//also runs on collision event - checks if grounded
     {
-        m_HitBox = Physics2D.BoxCast(transform.position-new Vector3(0,m_BoxSize.y/2,0), m_BoxSize, 0.0f, Vector2.down, 0f, m_GroundLayer);
+        m_HitBox = Physics2D.BoxCast(transform.position-new Vector3(0,(0.88f),0), m_BoxSize, 0.0f, Vector2.down, 0f, m_GroundLayer);
         m_IsGrounded= m_HitBox.collider;
     }
 
@@ -32,7 +32,7 @@ public class GroundSensor : MonoBehaviour
     {
         Gizmos.color = m_IsGrounded ? Color.green : Color.red;
         
-        Gizmos.DrawWireCube(transform.position-new Vector3(0,m_BoxSize.y/2,0), m_BoxSize);//Draws the boxcast area
+        Gizmos.DrawWireCube(transform.position-new Vector3(0,(0.88f),0), m_BoxSize);//Draws the boxcast area
     }
 }
 

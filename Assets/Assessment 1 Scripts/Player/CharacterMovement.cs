@@ -11,8 +11,10 @@ public class CharacterMovement : MonoBehaviour
 	[SerializeField] private float m_CoyoteTimeThreshold = 0.15f;//the total duration of the coyote time
 	[SerializeField] private float m_JumpDelayTime = 0.2f;//the delay after a jump is executed - the minimum being ~ 0.15 due to the coyote time 
 	[SerializeField] private float m_JumpBufferTime = 0.3f;//the buffer of time a jump is queued for - before hitting the ground
-	[SerializeField] private float m_ApexGravity = 0.7f;//the level of gravity at the apex of a jump (1 is normal gravity)
-	[SerializeField] private float m_ApexGravityTime = 0.4f;//the amount of time you experience reduced gravity at the apex of a jump
+	[SerializeField] private float m_ApexGravity = 0.2f;//the level of gravity at the apex of a jump (1 is normal gravity)
+	[SerializeField] private float m_ApexGravityTime = 0.2f;//the amount of time you experience reduced gravity at the apex of a jump
+	[SerializeField] private float m_MaxJumpCharge = 0.6f;//The longest you can hold a jump to gain more height
+	[SerializeField] private float m_MinJumpCharge = 0.2f;//The minimum amount of time for a jump to be considered held 
 	
 	private Rigidbody2D m_RB;
 	private GroundSensor m_GroundSensor;
@@ -21,6 +23,9 @@ public class CharacterMovement : MonoBehaviour
 	private float m_CoyoteTimeCounter;//the decrementing time left after leaving a ledge
 	private float m_JumpBufferCounter;//the decrementing time left for a buffered jump
 	private float m_ApexGravityCounter;//the decrementing time left for reduced gravity at apex
+	
+	private bool m_JumpHeld = false;
+	private float m_JumpHeldTime;
 	private enum JumpStates
 	{
 		Grounded,
@@ -43,7 +48,7 @@ public class CharacterMovement : MonoBehaviour
 		m_GroundSensor=GetComponentInChildren<GroundSensor>();
 		m_CurrentState = JumpStates.Grounded;
 	}
-
+	
 	#region InputFunctions
     public void SetInMove(float direction)
     {
@@ -65,19 +70,26 @@ public class CharacterMovement : MonoBehaviour
 	    }
     }
     
-    public void JumpPerformed()
+    public void JumpStarted()//false by default for tap, anything else for hold
     {
 	    if (m_CanJump)
-	    {
-		    if (m_GroundSensor.m_IsGrounded || m_CoyoteTimeCounter > 0f)
-		    {
-			    StartCoroutine(DoJump(m_JumpDelayTime));//applies jump velocity and delay
-		    }
-		    else
-		    {
-			    m_JumpBufferCounter = m_JumpBufferTime;//resets the jump buffer counter if midair
-		    }
-	    }
+        {
+	        if (m_GroundSensor.m_IsGrounded || m_CoyoteTimeCounter > 0f)
+	        {
+				StartCoroutine(DoJump(m_JumpDelayTime)); //applies jump velocity and delay
+				m_JumpHeld = true;//allows the held jump to end without needing to be grounded
+				m_JumpHeldTime = 0f;//reset the help time when back on the ground
+	        }
+            else 
+            {
+                m_JumpBufferCounter = m_JumpBufferTime;//resets the jump buffer counter if midair
+            }
+        }
+    }
+    
+    public void JumpEnded()
+    {
+	    m_JumpHeld = false;
     }
     #endregion
 
@@ -85,7 +97,7 @@ public class CharacterMovement : MonoBehaviour
     {
 	    if (!m_CanJump || !m_GroundSensor.m_IsGrounded)//essentially if jumped or not grounded
 	    {
-		    m_CoyoteTimeCounter-=Time.deltaTime;
+		    m_CoyoteTimeCounter-=Time.fixedDeltaTime;
 		    m_GroundSensor.CheckGround();
 
 		    if (m_CurrentState == JumpStates.Rising && ALMOST_ZERO(m_RB.linearVelocityY)) //changes the state to apex if rising and vertical velocity is near 0
@@ -95,14 +107,17 @@ public class CharacterMovement : MonoBehaviour
 			    m_ApexGravityCounter = m_ApexGravityTime;
 		    }
 	    }
-            
+
 	    else//if on the ground
+	    {
 		    m_CoyoteTimeCounter = m_CoyoteTimeThreshold;
+		    m_CurrentState = JumpStates.Grounded;
+	    }
             
 	    if (m_CurrentState == JumpStates.Apex)//if at the apex state
 	    {
 		    if (m_ApexGravityCounter > 0)//the remaining apex gravity time
-			    m_ApexGravityCounter -= Time.deltaTime;
+			    m_ApexGravityCounter -= Time.fixedDeltaTime;
 		    else
 			    m_CurrentState = JumpStates.Falling;//switches to falling state after apex time is over
 	    }
@@ -113,10 +128,32 @@ public class CharacterMovement : MonoBehaviour
             
 	    if (m_JumpBufferCounter > 0)//if the buffer has been reset
 	    {
-		    m_JumpBufferCounter-=Time.deltaTime;//start counting down the remaining buffer
+		    m_JumpBufferCounter-=Time.fixedDeltaTime;//start counting down the remaining buffer
 		    if(m_CanJump && m_GroundSensor.m_IsGrounded)//if on the ground and can jump during the buffer
 		    {
 			    StartCoroutine(DoJump(m_JumpDelayTime));
+			    m_JumpBufferCounter = 0f;//Ensures there is no leftover buffer so you can't spam jump
+		    }
+	    }
+
+	    if (m_JumpHeld)//charges a jump while the key is held
+	    {
+		    if(m_CurrentState == JumpStates.Grounded)
+				m_RB.linearVelocityY=0f;//Resets Y velocity for consistent jump height
+		    
+		    if (m_JumpHeldTime < m_MaxJumpCharge)
+		    {
+			    m_JumpHeldTime += Time.fixedDeltaTime;
+			    if (m_JumpHeldTime >= m_MinJumpCharge)
+			    {
+				    m_RB.AddForce(Vector2.up * m_JumpStrength, ForceMode2D.Force);//applies jump force while the key is held
+			    }
+			    
+		    }
+		    else if ((m_JumpHeldTime >= m_MaxJumpCharge) && m_CanJump)
+		    {
+			    StartCoroutine(DoJump(m_JumpDelayTime, false));
+			    m_JumpHeld = false;
 		    }
 	    }
     }
@@ -131,10 +168,14 @@ public class CharacterMovement : MonoBehaviour
 	    }
     }
     
-	private IEnumerator DoJump(float delay)
+	private IEnumerator DoJump(float delay, bool tap = true)
 	{
-		m_RB.linearVelocityY=0f;//Reset Y velocity for consistent jump height
-		m_RB.AddForce(Vector2.up * m_JumpStrength, ForceMode2D.Impulse);
+		if (tap)
+		{
+			m_RB.linearVelocityY=0f;
+			m_RB.AddForce(Vector2.up * m_JumpStrength, ForceMode2D.Impulse);
+		}
+		
 		m_CoyoteTimeCounter = 0f;
 		m_CurrentState= JumpStates.Rising;
 		
