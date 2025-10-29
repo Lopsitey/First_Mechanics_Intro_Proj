@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3600401525870630746}
   - component: {fileID: 969958807700409231}
   - component: {fileID: 929667974029550097}
+  - component: {fileID: 8174553978344554741}
   - component: {fileID: 7295024257335613442}
   - component: {fileID: 244251608806345176}
   - component: {fileID: 7433508209217880791}
@@ -87,6 +88,21 @@ MonoBehaviour:
   m_ApexGravityTime: 0.2
   m_MaxJumpCharge: 0.5
   m_MinJumpCharge: 0.2
+--- !u!114 &8174553978344554741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667636342438995758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d12828283d8343c787738d3e6c00afef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InteractLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &7295024257335613442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,6 +116,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CharacterMovement: {fileID: 929667974029550097}
+  m_InteractionHandler: {fileID: 8174553978344554741}
 --- !u!114 &244251608806345176
 MonoBehaviour:
   m_ObjectHideFlags: 0

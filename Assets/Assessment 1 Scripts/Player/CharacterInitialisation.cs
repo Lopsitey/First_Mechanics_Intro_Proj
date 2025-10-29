@@ -1,9 +1,16 @@
+#region
+
 using UnityEngine;
 
-public class CharacterInitialisation : MonoBehaviour
+#endregion
+
+namespace Assessment_1_Scripts.Player
 {
-    public void init()
+    public class CharacterInitialisation : MonoBehaviour
     {
-        //initialisation logic here
+        public void init()
+        {
+            //initialisation logic here
+        }
     }
 }
