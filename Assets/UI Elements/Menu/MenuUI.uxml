@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Elements/Menu/MenuStyles.uss?fileID=7433441132597879392&amp;guid=ceaeead1474e92146ac3c8950f91c5a3&amp;type=3#MenuStyles" />
+    <ui:VisualElement name="Page" style="flex-grow: 1; background-color: rgb(0, 0, 0);">
+        <ui:VisualElement name="Menu" style="flex-grow: 0; top: 40%; align-items: center; justify-content: center; align-self: center; align-content: center; background-color: rgb(135, 135, 135); padding-top: 20px; padding-right: 60px; padding-bottom: 20px; padding-left: 60px;">
+            <ui:Label text="Platformer Game" name="MenuTitle" style="padding-bottom: 20px; color: rgb(255, 255, 255); -unity-font-style: bold;" />
+            <ui:VisualElement name="ButtonContainer" style="flex-grow: 1; background-size: 100% 100%; -unity-background-scale-mode: stretch-to-fill; background-position-x: center 0; background-position-y: center 0; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; -unity-slice-scale: 1px; flex-shrink: 1; width: 150%;">
+                <ui:Button text="Play" name="PlayBtn" class="button" />
+                <ui:Button text="Exit" name="ExitBtn" class="button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
