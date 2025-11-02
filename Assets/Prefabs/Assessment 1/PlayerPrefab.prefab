@@ -83,10 +83,10 @@ MonoBehaviour:
   m_JumpStrength: 10
   m_CoyoteTimeThreshold: 0.15
   m_JumpDelayTime: 0.2
-  m_JumpBufferTime: 0.1
+  m_JumpBufferTime: 0.2
   m_ApexGravity: 0.4
   m_ApexGravityTime: 0.2
-  m_MaxJumpCharge: 0.5
+  m_MaxJumpCharge: 0.4
   m_MinJumpCharge: 0.2
 --- !u!114 &8174553978344554741
 MonoBehaviour:
@@ -268,7 +268,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 2.004}
+  m_Size: {x: 1, y: 2.003765}
   m_EdgeRadius: 0
 --- !u!114 &5106529664141127909
 MonoBehaviour:
@@ -308,7 +308,7 @@ Transform:
   m_GameObject: {fileID: 6009117837323065832}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.755, z: 0}
+  m_LocalPosition: {x: 0, y: -0.78, z: 0}
   m_LocalScale: {x: 1, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
