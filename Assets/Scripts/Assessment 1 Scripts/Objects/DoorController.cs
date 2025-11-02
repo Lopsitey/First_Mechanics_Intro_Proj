@@ -17,7 +17,7 @@ namespace Assessment_1_Scripts.Objects
         private Vector3 m_StartPosition;
         private Vector3 m_EndPosition;
 
-        private bool m_DoorsMoving = false;
+        private bool m_DoorsMoving;
 
         public void Interaction()
         {

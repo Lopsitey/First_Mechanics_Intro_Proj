@@ -18,7 +18,7 @@ namespace Assessment_1_Scripts.Objects
         private GameObject m_LeverRot;
 
         private Sprite m_OriginalSprite;
-        private bool m_Toggled = false;
+        private bool m_Toggled;
 
         private void Awake()
         {
