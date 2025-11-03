@@ -12,7 +12,7 @@ namespace Assessment_1_Scripts.Objects
         [SerializeField] private GameObject m_TopDoor;
         [SerializeField] private GameObject m_BottomDoor;
         [SerializeField] private float m_MoveDistance = 1.01f; // Total distance to move
-        [SerializeField] float m_MoveSpeed = 1f; // How far (%) the door interpolates each frame
+        [SerializeField] private float m_MoveSpeed = 0.6f; // How far (%) the door interpolates each frame
 
         private Vector3 m_StartPosition;
         private Vector3 m_EndPosition;
@@ -54,7 +54,7 @@ namespace Assessment_1_Scripts.Objects
                 endPosition = startPosition - new Vector3(0, distance, 0);
             }
 
-            while (Vector3.Distance(door.transform.position, endPosition) > 0.01f)
+            while (Vector3.Distance(door.transform.position, endPosition) > 0.02f)
             {
                 // Keeps moving the object a % of the remaining distance towards the target
                 door.transform.position = Vector3.Lerp(

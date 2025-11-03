@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 835681663225432990}
-  - component: {fileID: 4667071499300878256}
   - component: {fileID: 1184857919558022652}
+  - component: {fileID: 4667071499300878256}
   m_Layer: 6
   m_Name: Lightswitch
   m_TagString: Untagged
@@ -35,6 +35,22 @@ Transform:
   - {fileID: 7912890432878496620}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1184857919558022652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2321377447714069662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53b67f51947b4e0fbbb9dceae47c59d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_LightObject: {fileID: 0}
+  m_SpriteRenderer: {fileID: 0}
+  m_NewSprite: {fileID: 0}
+  m_LeverPivot: {fileID: 0}
 --- !u!61 &4667071499300878256
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -81,22 +97,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1184857919558022652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2321377447714069662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53b67f51947b4e0fbbb9dceae47c59d1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_LightObject: {fileID: 4241749567182470282}
-  m_SpriteRenderer: {fileID: 0}
-  m_NewSprite: {fileID: 0}
-  m_LeverRot: {fileID: 0}
 --- !u!1 &3118980779170544908
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +106,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7656965287352253800}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Pivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6612392687923842274}
   - component: {fileID: 1532801666415106187}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,7 +225,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6195890546971049413}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7912890432878496620}
   - component: {fileID: 8143621745213551058}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5599383600354869322}
   - component: {fileID: 1289736762635064705}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

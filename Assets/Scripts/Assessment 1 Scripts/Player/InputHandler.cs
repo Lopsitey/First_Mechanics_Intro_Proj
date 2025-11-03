@@ -9,8 +9,8 @@ namespace Assessment_1_Scripts.Player
 {
     public class InputHandler : MonoBehaviour
     {
-        [SerializeField] private CharacterMovement m_CharacterMovement;
-        [SerializeField] private InteractionHandler m_InteractionHandler;
+        private CharacterMovement m_CharacterMovement;
+        private InteractionHandler m_InteractionHandler;
 
         private PlayerControls m_ActionMap;
 
@@ -19,6 +19,8 @@ namespace Assessment_1_Scripts.Player
         private void Awake()
         {
             m_ActionMap = new PlayerControls();
+            m_CharacterMovement = GetComponent<CharacterMovement>();
+            m_InteractionHandler = GetComponent<InteractionHandler>();
         }
 
         private void OnEnable()

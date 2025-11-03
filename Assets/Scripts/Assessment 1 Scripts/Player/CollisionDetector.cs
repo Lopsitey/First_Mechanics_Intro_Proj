@@ -11,12 +11,11 @@ namespace Assessment_1_Scripts.Player
         public delegate void
             CollisionEventHandler(); //the delegate type for the collision state event - use void return type and no parameters
 
-        public static event CollisionEventHandler
+        public event CollisionEventHandler
             CollisionOverlap; //the collision state event - using the delegate type and it's signature
-        //static so it is shared across all instances
 
         //alternatively, you can use Action from System namespace
-        //public static event Action CollisionEntered;//the collision state event
+        //public event Action CollisionEntered;//the collision state event
 
         private void OnCollisionEnter2D(Collision2D other) //when a collision starts
         {
