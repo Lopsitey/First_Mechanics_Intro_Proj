@@ -10,21 +10,25 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Lopsitey"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Lopsitey&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/Lopsitey/First_Mechanics_Intro_Proj.git",
-    "accountId": "8c0ea674-832c-4d4d-9790-02ddc0fa8fe2"
+    "accountId": "25741ff7-2768-4970-8d00-62630ad9c415"
   }
 }]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Assessment 1 Scripts/Player/CharacterManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Assessment 1 Scripts/Player/CharacterMovement.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="34pEXFxUgGuxiEsGexswV6pV2mi" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -33,6 +37,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "settings.sync",
@@ -47,6 +52,7 @@
       <option name="presentableId" value="Default" />
       <updated>1761902152177</updated>
       <workItem from="1761902153736" duration="215000" />
+      <workItem from="1762183267370" duration="190000" />
     </task>
     <servers />
   </component>

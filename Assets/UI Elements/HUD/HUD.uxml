@@ -1,0 +1,3 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Elements/HUD/HUDStyles.uss?fileID=7433441132597879392&amp;guid=48ffe6184dc93284f89ef6590497fe06&amp;type=3#HUDStyles" />
+</ui:UXML>

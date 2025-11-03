@@ -9,7 +9,6 @@ namespace Assessment_1_Scripts.Player
     public class CharacterManager : MonoBehaviour
     {
         private HealthComponent m_HealthComp;
-
         private void Awake()
         {
             m_HealthComp = GetComponent<HealthComponent>();

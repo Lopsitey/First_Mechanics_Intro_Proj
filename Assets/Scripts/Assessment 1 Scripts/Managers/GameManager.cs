@@ -16,6 +16,12 @@ namespace Assessment_1_Scripts.Managers
 
         private GameObject m_PlayerRef; //holds a reference to the player once spawned
 
+        public delegate void
+            FinishedInitHandler(); // Delegate for end of initialization event
+
+        public event
+            FinishedInitHandler FinishInit; // Event triggered at the end of initialization
+
         void Start()
         {
             SpawnPlayer();
@@ -38,12 +44,23 @@ namespace Assessment_1_Scripts.Managers
 
             if (m_MainCamera.TryGetComponent<CameraInitialisation>(out var cameraInit))
                 cameraInit.Init(m_PlayerRef); //initialize the camera to follow the player
+            
+            FinishInit?.Invoke();
         }
 
         private void OnDisable() //defensive programming
         {
-            if (m_PlayerRef.TryGetComponent<HealthComponent>(out var healthComp))
-                healthComp.OnDeath -= SpawnPlayer;
+            if (m_PlayerRef)
+                if (m_PlayerRef.TryGetComponent<HealthComponent>(out var healthComp))
+                    healthComp.OnDeath -= SpawnPlayer;
+        }
+        
+        public bool TryGetPlayerHealthComp(out HealthComponent healthComp)//tries to get the player health component
+        {
+            if (m_PlayerRef != null && m_PlayerRef.TryGetComponent<HealthComponent>(out healthComp))
+                return true;
+            healthComp = null;
+            return false;
         }
     }
 }
