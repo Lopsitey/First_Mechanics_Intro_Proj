@@ -19,7 +19,7 @@
   <component name="GithubPullRequestsUISettings"><![CDATA[{
   "selectedUrlAndAccountId": {
     "url": "https://github.com/Lopsitey/First_Mechanics_Intro_Proj.git",
-    "accountId": "25741ff7-2768-4970-8d00-62630ad9c415"
+    "accountId": "859b80f4-a0a8-49e1-b7d3-01c99bb65624"
   }
 }]]></component>
   <component name="HighlightingSettingsPerFile">
@@ -34,16 +34,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "settings.sync",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="3b29ecfb-79a6-4a07-b6c5-1bd4942a2a2d" name="Changes" comment="" />
@@ -53,6 +53,7 @@
       <updated>1761902152177</updated>
       <workItem from="1761902153736" duration="215000" />
       <workItem from="1762183267370" duration="190000" />
+      <workItem from="1762787505205" duration="69000" />
     </task>
     <servers />
   </component>
