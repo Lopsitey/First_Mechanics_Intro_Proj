@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 #endregion
@@ -12,7 +13,7 @@ namespace Assessment_1_Scripts.Objects
         [Header("Objects")] [SerializeField] private GameObject m_TopDoor;
         [SerializeField] private GameObject m_BottomDoor;
         [SerializeField] private float m_MoveDistance = 1.01f; // Total distance to move
-        [SerializeField] private float m_MoveSpeed = 0.6f; // How far (%) the door interpolates each frame
+        [SerializeField] private float m_MoveSpeed = 0.33f; // How far (%) the door interpolates each frame
 
         private Vector3 m_StartPosition;
         private Vector3 m_EndPosition;
@@ -51,16 +52,12 @@ namespace Assessment_1_Scripts.Objects
             while (Vector3.Distance(door.transform.position, endPosition) > 0.02f)
             {
                 // Keeps moving the object a % of the remaining distance towards the target
-                door.transform.position = Vector3.Lerp(
-                    door.transform.position,
-                    endPosition,
-                    Time.fixedDeltaTime * m_MoveSpeed
-                );
+                
+                door.transform.position =
+                    Vector3.MoveTowards(door.transform.position, endPosition, Time.fixedDeltaTime * m_MoveSpeed);
 
                 yield return null;
             }
-
-            door.transform.position = endPosition;
         }
 
         private IEnumerator C_DoorSequence() //ensures only one instance of door movement occurs at a time
