@@ -36,7 +36,7 @@ namespace Assessment_1_Scripts.Player
             {
                 Collider2D result = m_OverlapResults[i]; //the current collider being checked
                 //if the collider is valid and the collider has a component that implements the IInteractible interface
-                if (result && result.TryGetComponent<IInteractible>(
+                if (result && result.TryGetComponent<IInteractable>(
                         out var interactable))
                 {
                     interactable.Interaction(); //assign it to a var and call its interaction method

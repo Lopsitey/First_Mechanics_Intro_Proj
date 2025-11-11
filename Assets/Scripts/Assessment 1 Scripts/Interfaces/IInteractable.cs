@@ -1,6 +1,6 @@
 ﻿namespace Assessment_1_Scripts
 {
-    public interface IInteractible
+    public interface IInteractable
     {
         public void Interaction();
     }

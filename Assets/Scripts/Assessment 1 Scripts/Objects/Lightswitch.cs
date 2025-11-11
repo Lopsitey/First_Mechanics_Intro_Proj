@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assessment_1_Scripts.Objects
 {
-    public class Lightswitch : MonoBehaviour, IInteractible
+    public class Lightswitch : MonoBehaviour, IInteractable
     {
         [Header("Light and Sprite Settings")] [SerializeField]
         private GameObject m_LightObject;
@@ -16,6 +16,9 @@ namespace Assessment_1_Scripts.Objects
 
         [Header("Lever Settings")] [SerializeField]
         private GameObject m_LeverPivot;
+
+        [Header("Door Trigger Settings")] [SerializeField]
+        private DoorController m_Doors;
 
         private Sprite m_OriginalSprite;
         private bool m_Toggled;
@@ -27,6 +30,16 @@ namespace Assessment_1_Scripts.Objects
 
         public void Interaction()
         {
+            if (m_Doors)
+            {
+                //does nothing if the doors are already moving
+                if (m_Doors.IsMoving())
+                    return;
+                //triggers the door if there is one linked to the lightswitch
+                else
+                    m_Doors.Interaction();
+            }
+
             m_Toggled = !m_Toggled;
 
             m_LeverPivot.transform.rotation = m_Toggled

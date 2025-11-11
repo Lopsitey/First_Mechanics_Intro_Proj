@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assessment_1_Scripts.Objects
 {
-    public class Signpost : MonoBehaviour, IInteractible
+    public class Signpost : MonoBehaviour, IInteractable
     {
         [SerializeField] private GameObject m_PopupCanvas; //the canvas the sign text is on
 

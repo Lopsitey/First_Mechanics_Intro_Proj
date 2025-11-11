@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Assessment_1_Scripts.Objects
 {
-    public class DoorController : MonoBehaviour, IInteractible
+    public class DoorController : MonoBehaviour, IInteractable
     {
-        [SerializeField] private GameObject m_TopDoor;
+        [Header("Objects")] [SerializeField] private GameObject m_TopDoor;
         [SerializeField] private GameObject m_BottomDoor;
         [SerializeField] private float m_MoveDistance = 1.01f; // Total distance to move
         [SerializeField] private float m_MoveSpeed = 0.6f; // How far (%) the door interpolates each frame
@@ -27,12 +27,6 @@ namespace Assessment_1_Scripts.Objects
             StartCoroutine(C_DoorSequence());
 
             m_MoveDistance *= -1; //reverses the movement direction if the door is toggled
-
-            if (transform.TryGetComponent<Lightswitch>(
-                    out var lightswitch)) //triggers the lightswitch if there is one on the door
-            {
-                lightswitch.Interaction();
-            }
         }
 
         private IEnumerator C_MoveRoutine(bool isTopDoor, float distance)
@@ -80,6 +74,11 @@ namespace Assessment_1_Scripts.Objects
             yield return moveBottom;
 
             m_DoorsMoving = false;
+        }
+
+        public bool IsMoving()
+        {
+            return m_DoorsMoving;
         }
     }
 }
