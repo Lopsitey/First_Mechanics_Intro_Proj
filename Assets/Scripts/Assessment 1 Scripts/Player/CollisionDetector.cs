@@ -26,6 +26,6 @@ namespace Assessment_1_Scripts.Player
         private void OnCollisionExit2D(Collision2D other) //when a collision ends
         {
             CollisionOverlap?.Invoke();
-        }
+        } //TODO a forum post on this and Dirty Flag
     }
 }

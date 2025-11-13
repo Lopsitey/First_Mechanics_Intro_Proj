@@ -42,13 +42,14 @@ namespace Assessment_1_Scripts.Managers
             {
                 m_PlayerRef.GetComponent<CharacterManager>().Init(); //initialise player character manager
                 m_PlayerRef.GetComponent<HealthComponent>().OnDeath += SpawnPlayer; //resubscribes to death event
+
                 m_HUD.gameObject.SetActive(true);
                 //create HUD for player passing TransformWrapper for data binding
                 m_HUD.CreateHUD(m_PlayerRef.GetComponent<TransformWrapper>());
-            }
 
-            if (m_MainCamera.TryGetComponent<CameraInitialisation>(out var cameraInit))
-                cameraInit.Init(m_PlayerRef); //initialise the camera to follow the player
+                if (m_MainCamera.TryGetComponent<CameraInitialisation>(out var cameraInit))
+                    cameraInit.Init(m_PlayerRef.transform); //initialises the camera to follow the player
+            }
         }
 
         private void OnDisable() //defensive programming
@@ -56,6 +57,24 @@ namespace Assessment_1_Scripts.Managers
             if (m_PlayerRef)
                 if (m_PlayerRef.TryGetComponent<HealthComponent>(out var healthComp))
                     healthComp.OnDeath -= SpawnPlayer;
+        }
+
+        /// <summary>
+        /// Gets the player, returns true if found, false if null
+        /// </summary>
+        /// <param name="player">The player object to return</param>
+        /// <returns>Bool</returns>
+        public bool TryGetPlayer(out GameObject player)
+        {
+            if (m_PlayerRef)
+                player = m_PlayerRef;
+            else
+            {
+                player = null;
+                return false;
+            }
+
+            return true;
         }
     }
 }

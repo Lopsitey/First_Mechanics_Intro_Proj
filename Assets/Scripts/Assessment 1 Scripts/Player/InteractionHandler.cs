@@ -40,7 +40,7 @@ namespace Assessment_1_Scripts.Player
                         out var interactable))
                 {
                     interactable.Interaction(); //assign it to a var and call its interaction method
-                }
+                } //TODO forum post on this and why it doesn't do a loop through every interactable script on an object
             }
         }
 

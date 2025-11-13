@@ -18,6 +18,6 @@ namespace Assessment_1_Scripts.Objects
             {
                 healthComponent.ApplyDamage(m_DamageAmount, this);
             }
-        }
+        } //TODO forum post on this and the future of combat/damage etc
     }
 }

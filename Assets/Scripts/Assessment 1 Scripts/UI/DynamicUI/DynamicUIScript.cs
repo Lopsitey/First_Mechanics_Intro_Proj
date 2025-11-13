@@ -30,8 +30,9 @@ namespace Assessment_1_Scripts.UI.DynamicUI
             m_UIRoot.Add(button);
         }
 
-        private void Handle_LabelSpawn(ClickEvent clickEvent) 
-        {//todo could potentially use this for creating a confirmation popup widget
+        private void Handle_LabelSpawn(ClickEvent clickEvent)
+        {
+            //TODO could potentially use this for creating a confirmation popup widget
             Debug.Log("Handle_LabelSpawn clicked");
             if (m_ScrollArea == null)
             {
@@ -44,7 +45,7 @@ namespace Assessment_1_Scripts.UI.DynamicUI
             }
 
             Label label = new Label();
-            label.name="lbl_randomnumberlabel";
+            label.name = "lbl_randomnumberlabel";
             label.text = Random.Range(Int32.MinValue, Int32.MaxValue).ToString();
             label.AddToClassList("label");
             m_ScrollArea.Add(label);

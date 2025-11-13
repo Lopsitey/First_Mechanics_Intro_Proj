@@ -10,6 +10,7 @@ namespace Assessment_1_Scripts.UI.Handlers.Menu
 {
     public class MenuHandler : MonoBehaviour
     {
+        //TODO improve menu UI and in general
         private UIDocument m_UIDocument;
         private Button m_Play;
         private Button m_Exit;

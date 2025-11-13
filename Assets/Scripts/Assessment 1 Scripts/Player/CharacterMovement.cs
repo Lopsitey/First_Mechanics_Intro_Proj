@@ -128,6 +128,8 @@ namespace Assessment_1_Scripts.Player
             }
         }
 
+        //TODO more forum posts on potential future interface ideas and more ways I can implement design patters and SOLID principles
+        //TODO make a static helper function file with public functions like this?
         private static bool ALMOST_ZERO(float x) => Mathf.Abs(x) < 0.1f; //helper function to check for near-zero values
 
         IEnumerator C_MoveUpdate()

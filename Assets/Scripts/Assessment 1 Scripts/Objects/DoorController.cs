@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 #endregion
@@ -49,10 +48,10 @@ namespace Assessment_1_Scripts.Objects
                 endPosition = startPosition - new Vector3(0, distance, 0);
             }
 
-            while (Vector3.Distance(door.transform.position, endPosition) > 0.02f)
+            while (Vector3.Distance(door.transform.position, endPosition) > 0.01f)
             {
                 // Keeps moving the object a % of the remaining distance towards the target
-                
+
                 door.transform.position =
                     Vector3.MoveTowards(door.transform.position, endPosition, Time.fixedDeltaTime * m_MoveSpeed);
 
@@ -77,5 +76,5 @@ namespace Assessment_1_Scripts.Objects
         {
             return m_DoorsMoving;
         }
-    }
+    } //TODO a forum post on this and the lightswitch and signpost
 }
