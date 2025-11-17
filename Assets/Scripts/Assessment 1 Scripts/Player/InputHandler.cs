@@ -32,6 +32,7 @@ namespace Assessment_1_Scripts.Player
             m_ActionMap.Default.Jump.performed += Handle_JumpStarted;
             m_ActionMap.Default.Jump.canceled += Handle_JumpCancelled;
             m_ActionMap.Default.Interact.performed += Handle_InteractPerformed;
+            m_ActionMap.Default.MoveDown.performed += Handle_MoveDownPerformed;
         }
 
         private void OnDisable()
@@ -43,6 +44,7 @@ namespace Assessment_1_Scripts.Player
             m_ActionMap.Default.Jump.started -= Handle_JumpStarted;
             m_ActionMap.Default.Jump.canceled -= Handle_JumpCancelled;
             m_ActionMap.Default.Interact.performed -= Handle_InteractPerformed;
+            m_ActionMap.Default.MoveDown.performed -= Handle_MoveDownPerformed;
         }
 
         #endregion
@@ -72,6 +74,11 @@ namespace Assessment_1_Scripts.Player
         private void Handle_InteractPerformed(InputAction.CallbackContext context)
         {
             m_InteractionHandler.Interact();
+        }
+
+        private void Handle_MoveDownPerformed(InputAction.CallbackContext context)
+        {
+            m_CharacterMovement.MoveDown();
         }
 
         #endregion

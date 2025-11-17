@@ -87,6 +87,8 @@ MonoBehaviour:
   m_ApexGravityTime: 0.2
   m_MaxJumpCharge: 0.4
   m_MinJumpCharge: 0.2
+  m_PlayerCollider: {fileID: 1196784031089495143}
+  m_SemiSolidTag: SemiSolid
 --- !u!114 &1705262161868090190
 MonoBehaviour:
   m_ObjectHideFlags: 0

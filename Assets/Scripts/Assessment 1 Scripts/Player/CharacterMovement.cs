@@ -35,21 +35,23 @@ namespace Assessment_1_Scripts.Player
         [SerializeField]
         private float m_MinJumpCharge = 0.2f; //The minimum amount of time for a jump to be considered held 
 
-        private float m_ApexGravityCounter; //the decrementing time left for reduced gravity at apex
+        [Header("Miscellaneous Settings")] [SerializeField]
+        private Collider2D m_PlayerCollider;
 
         private bool m_CanJump = true; //if the player can jump (to prevent double jumps)
+        private bool m_JumpHeld;
+        private float m_JumpHeldTime;
 
-        private Coroutine m_CMove;
         private float m_CoyoteTimeCounter; //the decrementing time left after leaving a ledge
+        private float m_ApexGravityCounter; //the decrementing time left for reduced gravity at apex
+        private float m_JumpBufferCounter; //the decrementing time left for a buffered jump
 
         private JumpStates m_CurrentState;
         private GroundSensor m_GroundSensor;
+
+        private Coroutine m_CMove;
         private float m_InMove;
         private bool m_IsMoveActive;
-        private float m_JumpBufferCounter; //the decrementing time left for a buffered jump
-
-        private bool m_JumpHeld;
-        private float m_JumpHeldTime;
 
         // ReSharper disable once InconsistentNaming
         private Rigidbody2D m_RB;
@@ -74,7 +76,7 @@ namespace Assessment_1_Scripts.Player
                 {
                     m_CurrentState = JumpStates.Apex;
                     m_RB.gravityScale = m_ApexGravity; //reduces gravity at apex by 15% for a smoother transition
-                    m_ApexGravityCounter = m_ApexGravityTime;
+                    m_ApexGravityCounter = m_ApexGravityTime; //only ran when the state first changes
                 }
             }
 
@@ -96,13 +98,14 @@ namespace Assessment_1_Scripts.Player
                 m_RB.gravityScale = 1f; //reverts gravity back to normal
             }
 
-            if (m_JumpBufferCounter > 0) //if the buffer has been reset
+            if (m_JumpBufferCounter > 0) //if there is time left in the buffer
             {
                 m_JumpBufferCounter -= Time.fixedDeltaTime; //start counting down the remaining buffer
-                if (m_CanJump && m_GroundSensor.m_IsGrounded) //if on the ground and can jump during the buffer
+                if (m_CanJump &&
+                    m_GroundSensor.m_IsGrounded) //if the jump delay has ended and the player is near the ground
                 {
                     StartCoroutine(DoJump(m_JumpDelayTime));
-                    m_JumpBufferCounter = 0f; //Ensures there is no leftover buffer so you can't spam jump
+                    m_JumpBufferCounter = 0f; //resets the buffer so you can't spam jump
                 }
             }
 
@@ -159,6 +162,23 @@ namespace Assessment_1_Scripts.Player
             m_CanJump = true;
         }
 
+        /// <summary>
+        /// Allows the player to drop through semi-solid platforms  
+        /// </summary>
+        /// <param name="platformCollider">A reference to the platform to drop through</param>
+        /// <returns></returns>
+        private IEnumerator C_DropThroughPlatform(Collider2D platformCollider)
+        {
+            // Ignores individual platform
+            Physics2D.IgnoreCollision(m_PlayerCollider, platformCollider, true);
+
+            // Waits for the player to pass through
+            yield return new WaitForSeconds(0.75f);
+
+            // Tells the physics engine to stop ignoring it
+            Physics2D.IgnoreCollision(m_PlayerCollider, platformCollider, false);
+        }
+
         private enum JumpStates
         {
             Grounded,
@@ -209,6 +229,21 @@ namespace Assessment_1_Scripts.Player
         public void JumpEnded()
         {
             m_JumpHeld = false;
+        }
+
+        public void MoveDown()
+        {
+            //uses the overloaded version to get the collider and return if on the ground
+            if (m_GroundSensor.CheckGround(out var platformCollider))
+            {
+                //just realised I don't need to do TryGet<comp>(out var compName) and can do the below instead
+                //the _ means I'm just not using the out variable, it's called a discard
+                if (platformCollider && platformCollider.TryGetComponent(out PlatformEffector2D _))
+                {
+                    // Allows the player to drop through the platform
+                    StartCoroutine(C_DropThroughPlatform(platformCollider));
+                }
+            }
         }
 
         #endregion
