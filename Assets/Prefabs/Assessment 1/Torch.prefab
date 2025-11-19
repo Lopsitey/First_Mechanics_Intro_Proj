@@ -184,12 +184,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c4db52eb3e9d7747a49f3594bcc13c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  light2D: {fileID: 0}
-  m_minIntensity: 1.5
-  m_maxIntensity: 2.3
-  m_radiusJitter: 0.25
-  m_flickerRate: 0.3
-  m_colourShift: 0.1
+  m_Light2D: {fileID: 0}
+  m_MinIntensity: 1.5
+  m_MaxIntensity: 2.3
+  m_RadiusJitter: 0.25
+  m_FlickerRate: 0.3
+  m_ColourShift: 0.1
 --- !u!1 &4154214764289554947
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,8 +218,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3553279964657090126}
   - {fileID: 1640840128799685251}

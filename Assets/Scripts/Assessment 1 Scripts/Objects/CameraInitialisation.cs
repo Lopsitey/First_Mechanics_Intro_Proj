@@ -21,7 +21,7 @@ namespace Assessment_1_Scripts.Objects
             if (m_PlayerTransform)
             {
                 transform.position = m_PlayerTransform.position + m_Offset;
-            } //TODO add code for allowing the player to move a small amount before the camera snaps to them
+            }
         }
     }
 }

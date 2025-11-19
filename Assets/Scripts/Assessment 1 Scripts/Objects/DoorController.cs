@@ -76,5 +76,5 @@ namespace Assessment_1_Scripts.Objects
         {
             return m_DoorsMoving;
         }
-    } //TODO a forum post on this and the lightswitch and signpost
+    }
 }

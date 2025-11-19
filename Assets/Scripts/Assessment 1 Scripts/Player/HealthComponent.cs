@@ -36,8 +36,7 @@ namespace Assessment_1_Scripts.Player
 
             OnDamaged?.Invoke(m_CurrentHealth, m_MaxHealth, damage);
             if (m_CurrentHealth <= 0)
-                OnDeath?.Invoke(
-                    instigator); //TODO dirty flag - use this event in another script to check health and then increase damage or smthn
+                OnDeath?.Invoke(instigator);
         }
     }
 }
