@@ -81,13 +81,13 @@ MonoBehaviour:
   m_GroundMoveSpeed: 6
   m_AirMoveSpeed: 7
   m_JumpStrength: 23
-  m_CoyoteTimeThreshold: 0.15
   m_JumpDelayTime: 0.2
+  m_MinJumpCharge: 0.2
+  m_MaxJumpCharge: 0.4
+  m_CoyoteTimeThreshold: 0.15
   m_JumpBufferTime: 0.2
   m_ApexGravity: 1.6
   m_ApexGravityTime: 0.2
-  m_MaxJumpCharge: 0.4
-  m_MinJumpCharge: 0.2
   m_NudgeForce: 0.3
   m_PlayerCollider: {fileID: 1196784031089495143}
 --- !u!114 &1705262161868090190
@@ -535,4 +535,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   m_BoxSize: {x: 0.84, y: 0.05}
-  m_HeadWidth: 0.38
+  m_BodyWidth: 0.25
+  m_FeetYOffset: 0.77
+  m_LedgeRayLength: 0.299
+  m_LegHeight: 0.35

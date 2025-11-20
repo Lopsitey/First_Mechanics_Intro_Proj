@@ -9,57 +9,69 @@ namespace Assessment_1_Scripts.Player
 {
     public class CharacterMovement : MonoBehaviour
     {
-        [Header("Basic Movement Settings")] [SerializeField]
+        [Header("Movement Speed")] [SerializeField]
         private float m_GroundMoveSpeed = 5;
 
         [SerializeField] private float m_AirMoveSpeed = 8f;
-        [SerializeField] private float m_JumpStrength = 10;
 
-        [Header("Advanced Movement Settings")] [SerializeField]
-        private float m_CoyoteTimeThreshold = 0.15f; //the total duration of the coyote time
+        [Header("Jumping")] [SerializeField] private float m_JumpStrength = 10;
 
-        [SerializeField] private float
-            m_JumpDelayTime =
-                0.2f; //the delay after a jump is executed - the minimum being ~ 0.15 due to the coyote time 
+        //the delay after a jump is executed - the minimum being ~ 0.15 due to the coyote time
+        [SerializeField] private float m_JumpDelayTime = 0.2f;
 
-        [SerializeField]
-        private float m_JumpBufferTime = 0.2f; //the buffer of time a jump is queued for - before hitting the ground
+        //The minimum amount of time for a jump to be considered held
+        [SerializeField] private float m_MinJumpCharge = 0.2f;
 
-        [SerializeField]
-        private float m_ApexGravity = 0.4f; //the level of gravity at the apex of a jump (1 is normal gravity)
+        //The longest you can hold a jump to gain more height
+        [SerializeField] private float m_MaxJumpCharge = 0.4f;
 
-        [SerializeField] private float
-            m_ApexGravityTime = 0.2f; //the amount of time you experience reduced gravity at the apex of a jump
+        //the total duration of the coyote time
+        [SerializeField] private float m_CoyoteTimeThreshold = 0.15f;
 
-        [SerializeField] private float m_MaxJumpCharge = 0.4f; //The longest you can hold a jump to gain more height
+        //the buffer of time a jump is queued for - before hitting the ground
+        [SerializeField] private float m_JumpBufferTime = 0.2f;
 
-        [SerializeField]
-        private float m_MinJumpCharge = 0.2f; //The minimum amount of time for a jump to be considered held
+        //the level of gravity at the apex of a jump (1 is normal gravity)
+        [SerializeField] private float m_ApexGravity = 0.4f;
 
-        [SerializeField]
-        private float m_NudgeForce = 0.5f; //How far to nudge the player when they bump their head or clip a corner
+        //the amount of time you experience reduced gravity at the apex of a jump
+        [SerializeField] private float m_ApexGravityTime = 0.2f;
 
-        [Header("Miscellaneous Settings")] [SerializeField]
+        //How far to nudge the player when they bump their head or clip a corner
+        [Header("Bumped Head & Corner Correction")] [SerializeField]
+        private float m_NudgeForce = 0.5f;
+
+        [SerializeField] private float m_NudgeCooldown = 0.2f; //How long to wait between nudges
+        private float m_NudgeTimer; //Tracks the cooldown
+
+        [Header("Miscellaneous")] [SerializeField]
         private Collider2D m_PlayerCollider;
 
-        private bool m_CanJump = true; //if the player can jump (to prevent double jumps)
+        //if the player can jump (to prevent double jumps)
+        private bool m_CanJump = true;
         private bool m_JumpHeld;
         private float m_JumpHeldTime;
 
-        private float m_CoyoteTimeCounter; //the decrementing time left after leaving a ledge
-        private float m_ApexGravityCounter; //the decrementing time left for reduced gravity at apex
-        private float m_JumpBufferCounter; //the decrementing time left for a buffered jump
+        //time left after leaving a ledge
+        private float m_CoyoteTimeCounter;
+
+        //time left for reduced gravity at apex
+        private float m_ApexGravityCounter;
+
+        //time left for a buffered jump
+        private float m_JumpBufferCounter;
+        //all counters decrement
 
         private JumpStates m_CurrentState;
         private float m_CurrentMoveSpeed;
         private float m_DefaultGravity;
         private GroundSensor m_GroundSensor;
 
-        private Coroutine m_CMove;
-        private float m_InMove;
-
         // ReSharper disable once InconsistentNaming
         private Rigidbody2D m_RB;
+
+        private Coroutine m_CMove;
+        private float m_InMove;
 
         private void Awake()
         {
@@ -72,12 +84,19 @@ namespace Assessment_1_Scripts.Player
 
         private void FixedUpdate()
         {
+            //Only runs if a nudge previously occured to set the timer 
+            if (m_NudgeTimer > 0)
+            {
+                m_NudgeTimer -= Time.fixedDeltaTime;
+            }
+
             switch (m_CurrentState)
             {
                 case JumpStates.Grounded:
                     //Coyote counter is set, so it can decrement
                     m_CoyoteTimeCounter = m_CoyoteTimeThreshold;
 
+                    //the ground sensor can detect if the 
                     if (!m_GroundSensor.m_IsGrounded) // if in the air
                     {
                         m_CurrentState = m_RB.linearVelocityY < 0 ? JumpStates.Falling : JumpStates.Rising;
@@ -86,27 +105,9 @@ namespace Assessment_1_Scripts.Player
                     break;
 
                 case JumpStates.Rising:
-                    m_GroundSensor.CheckGround();
-
-                    int hitDir = m_GroundSensor.CheckCeiling();
-                    Vector2 pos = m_RB.position;
-
-                    if (hitDir > 1)
-                    {
-                        if (hitDir == 2)
-                        {
-                            //if hit the left shoulder nudge right
-                            pos.x += m_NudgeForce;
-                        }
-                        else if (hitDir == 3)
-                        {
-                            //if hit the right shoulder nudge left
-                            pos.x -= m_NudgeForce;
-                        }
-
-                        //Moves player if collision hit a shoulder
-                        m_RB.MovePosition(pos);
-                    }
+                    //m_GroundSensor.CheckGround();//boxcast for an accurate ground check and for the input buffer
+                    if (m_NudgeTimer <= 0)
+                        CheckNudges();
 
                     m_CoyoteTimeCounter -= Time.fixedDeltaTime;
                     //changes the state to apex if rising and vertical velocity is near 0
@@ -142,8 +143,7 @@ namespace Assessment_1_Scripts.Player
                     break;
 
                 case JumpStates.Falling:
-                    m_GroundSensor.CheckGround(); //boxcast for an accurate ground check and for the input buffer
-
+                    m_GroundSensor.CheckGround();
                     //clamps vertical velocity to prevent extreme values
                     m_RB.linearVelocityY = Mathf.Clamp(m_RB.linearVelocityY, -12f, 30f);
 
@@ -247,6 +247,45 @@ namespace Assessment_1_Scripts.Player
             Rising,
             Apex,
             Falling
+        }
+
+
+        /// <summary>
+        ///Applies nudges if your legs clip a corner or if the edges of your head clip a corner  
+        /// </summary>
+        private void CheckNudges()
+        {
+            //Returns the side of the head hit
+            int hitDir = m_GroundSensor.CheckCeiling();
+
+            if (hitDir > 1)
+            {
+                Vector2 pos = m_RB.position;
+                if (hitDir == 2) pos.x += m_NudgeForce; //if hit the left shoulder nudge right
+                else if (hitDir == 3) pos.x -= m_NudgeForce; //if hit the right shoulder nudge left
+
+                //Moves player if collision hit a shoulder
+                m_RB.MovePosition(pos);
+
+                //Starts the cooldown
+                m_NudgeTimer = m_NudgeCooldown;
+                return; //Don't try to ledge grab in the same frame
+            }
+
+            // Only checks if moving sideways
+            if (m_InMove != 0)
+            {
+                //If hit a corner
+                if (m_GroundSensor.CheckLedge(m_InMove))
+                {
+                    Vector2 targetPos = m_RB.position;
+                    targetPos.y += 0.25f; //Upwards nudge height
+                    m_RB.MovePosition(targetPos);
+
+                    //Starts the cooldown
+                    m_NudgeTimer = m_NudgeCooldown;
+                }
+            }
         }
 
         #region InputFunctions
