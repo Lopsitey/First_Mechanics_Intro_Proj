@@ -25,6 +25,9 @@ namespace Assessment_1_Scripts.Player
         //The longest you can hold a jump to gain more height
         [SerializeField] private float m_MaxJumpCharge = 0.4f;
 
+        //The amount of friction the sticky feet on landing mechanic applies
+        [SerializeField] private float m_LandingFriction = 0.2f;
+
         //the total duration of the coyote time
         [SerializeField] private float m_CoyoteTimeThreshold = 0.15f;
 
@@ -152,7 +155,23 @@ namespace Assessment_1_Scripts.Player
 
                     //When inevitably grounded
                     if (m_GroundSensor.m_IsGrounded)
+                    {
+                        //Checks if landing while trying to stop OR turn around
+                        bool tryingToStop = ALMOST_ZERO(m_InMove, 0.01f); //if within 0.01 of 0
+
+                        //If input is left and the player is moving right or vice versa
+                        bool tryingToTurn = (m_InMove < 0 && m_RB.linearVelocityX > 0) ||
+                                            (m_InMove > 0 && m_RB.linearVelocityX < 0);
+
+                        if (tryingToStop || tryingToTurn)
+                        {
+                            //Reduces horizontal momentum
+                            m_RB.linearVelocityX *= m_LandingFriction;
+                        }
+
                         m_CurrentState = JumpStates.Grounded;
+                    }
+
                     break;
             }
 
