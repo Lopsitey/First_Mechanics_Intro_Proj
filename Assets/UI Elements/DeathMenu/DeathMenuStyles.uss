@@ -1,0 +1,34 @@
+VisualElement {
+}
+
+.deathbutton {
+    justify-content: flex-start;
+    height: 20%;
+    width: 100%;
+    background-color: rgb(192, 37, 37);
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    font-size: 200%;
+}
+
+.deathtext {
+    margin-top: 5px;
+    -unity-text-align: upper-center;
+    color: rgb(0, 0, 0);
+    -unity-font-style: bold;
+    font-size: 350%;
+    text-shadow: 2.5px 1px 0 rgb(0, 0, 0);
+}
+
+.deathbutton:hover {
+    height: 25%;
+    width: 105%;
+    border-color: white;
+    border-width: 2.5px;
+}

@@ -2,6 +2,7 @@
 
 using System.Collections;
 using Assessment_2_Scripts.Player;
+using Assessment_2_Scripts.Utilities;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -138,7 +139,7 @@ namespace Assessment_1_Scripts.Player
 
                     m_CoyoteTimeCounter -= Time.fixedDeltaTime;
                     //changes the state to apex if rising and vertical velocity is near 0
-                    if (ALMOST_ZERO(m_RB.linearVelocityY, 1f)) //if the y velocity is within 1 of zero
+                    if (GameHelpers.ALMOST_ZERO(m_RB.linearVelocityY, 1f)) //if the y velocity is within 1 of zero
                     {
                         //essentially a perfect jump
                         m_CurrentState = JumpStates.Apex;
@@ -178,7 +179,7 @@ namespace Assessment_1_Scripts.Player
                     if (m_GroundSensor.CheckGround(out _))
                     {
                         //Checks if landing while trying to stop OR turn around
-                        bool tryingToStop = ALMOST_ZERO(m_InMove, 0.01f); //if within 0.01 of 0
+                        bool tryingToStop = GameHelpers.ALMOST_ZERO(m_InMove, 0.01f); //if within 0.01 of 0
 
                         //If input is left and the player is moving right or vice versa
                         bool tryingToTurn = (m_InMove < 0 && m_RB.linearVelocityX > 0) ||
@@ -254,14 +255,6 @@ namespace Assessment_1_Scripts.Player
             if (m_CurrentState == JumpStates.Aiming)
                 Aim();
         }
-
-        /// <summary>
-        /// Checks if the argument is close to zero, returns true if it is, false if not
-        /// </summary>
-        /// <param name="x">The value to check</param>
-        /// <param name="y">How close to zero the value has to be</param>
-        /// <returns>Boolean</returns>
-        private static bool ALMOST_ZERO(float x, float y) => Mathf.Abs(x) < y;
 
         IEnumerator C_MoveUpdate()
         {

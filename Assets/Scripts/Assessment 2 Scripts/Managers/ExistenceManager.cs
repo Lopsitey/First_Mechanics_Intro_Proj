@@ -1,8 +1,9 @@
 #region
 
-using Assessment_2_Scripts.Objects;
 using Assessment_2_Scripts.Player;
+using Assessment_2_Scripts.UI.Managers.Death_Menu;
 using Assessment_2_Scripts.UI.Managers.HUD;
+using Unity.Cinemachine;
 using UnityEngine;
 
 #endregion
@@ -15,24 +16,31 @@ namespace Assessment_2_Scripts.Managers
     /// </summary>
     public class ExistenceManager : Singleton<ExistenceManager>
     {
-        [SerializeField] private GameObject m_MainCamera; //the main camera for the every scene
+        //TODO public event Action OnPlayerSpawned; this should be done in the future to decouple all of these systems from the manager
+
+        [SerializeField] private CinemachineCamera m_PlayerCamera; //the CineMachine camera which follows the player
 
         [SerializeField] private GameObject m_PlayerPrefab; //the player to be spawned
 
         [SerializeField] private HUDManager m_HUD; //the HUD creation script
+
+        [SerializeField] private DeathMenuManager m_DeathMenu;
 
         private GameObject m_PlayerRef; //holds a reference to the player once spawned
 
         void Start()
         {
             SpawnPlayer();
+            //create HUD once for player passing PlayerWrapper for data binding
+            m_HUD.CreateHUD(m_PlayerRef.GetComponent<PlayerWrapper>());
+            //creates the respawn menu once
+            m_DeathMenu.CreateMenu(m_PlayerRef.GetComponent<HealthComponent>());
         }
 
-        private void SpawnPlayer(MonoBehaviour instigator = null)
+        public void SpawnPlayer(MonoBehaviour instigator = null)
         {
             if (instigator != null) //killed by something
             {
-                m_PlayerRef.GetComponent<HealthComponent>().OnDeath -= SpawnPlayer;
                 m_HUD.gameObject.SetActive(false); //deactivates HUD on death
             }
 
@@ -41,22 +49,11 @@ namespace Assessment_2_Scripts.Managers
             if (m_PlayerRef)
             {
                 m_PlayerRef.GetComponent<CharacterManager>().Init(); //initialise player character manager
-                m_PlayerRef.GetComponent<HealthComponent>().OnDeath += SpawnPlayer; //resubscribes to death event
 
-                m_HUD.gameObject.SetActive(true);
-                //create HUD for player passing PlayerWrapper for data binding
-                m_HUD.CreateHUD(m_PlayerRef.GetComponent<PlayerWrapper>());
+                m_HUD.gameObject.SetActive(true); //toggles HUD on again
 
-                if (m_MainCamera.TryGetComponent<CameraInitialisation>(out var cameraInit))
-                    cameraInit.Init(m_PlayerRef.transform); //initialises the camera to follow the player
+                m_PlayerCamera.Follow = m_PlayerRef.transform; //initialises the camera to follow the player
             }
-        }
-
-        private void OnDisable() //defensive programming
-        {
-            if (m_PlayerRef)
-                if (m_PlayerRef.TryGetComponent<HealthComponent>(out var healthComp))
-                    healthComp.OnDeath -= SpawnPlayer;
         }
 
         /// <summary>

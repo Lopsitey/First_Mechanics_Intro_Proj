@@ -12,17 +12,22 @@ namespace Assessment_2_Scripts.Player
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [SerializeField] public HealthComponent m_HealthComp;
+        private HealthComponent m_HealthComp;
 
         //allows the data source path and data source to access the transform position x and y
-        [CreateProperty] public float XPos => transform.position.x;
-
-        [CreateProperty] public float YPos => transform.position.y;
+        //Evaluates to false if the object is destroyed
+        [CreateProperty] public float XPos => this ? transform.position.x : 0f;
+        [CreateProperty] public float YPos => this ? transform.position.y : 0f;
 
         //Makes the health bar width dynamic - works even if max health changes
         [CreateProperty]
         public float HealthPercent =>
             (m_HealthComp.GetHealth / m_HealthComp.GetMaxHealth) * 100f;
+
+        void Awake()
+        {
+            m_HealthComp = GetComponent<HealthComponent>();
+        }
 
         void OnEnable()
         {

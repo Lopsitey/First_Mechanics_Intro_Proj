@@ -43,7 +43,7 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
                 DataBinding xBinding = new DataBinding
                 {
                     dataSource = player,
-                    dataSourcePath = new PropertyPath("xPos"),
+                    dataSourcePath = new PropertyPath("XPos"),
                     bindingMode = BindingMode.ToTarget
                 };
                 xBinding.updateTrigger = BindingUpdateTrigger.OnSourceChanged;
@@ -56,7 +56,7 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
                 DataBinding yBinding = new DataBinding
                 {
                     dataSource = player,
-                    dataSourcePath = new PropertyPath("yPos"),
+                    dataSourcePath = new PropertyPath("YPos"),
                     bindingMode = BindingMode.ToTarget
                 };
                 yBinding.updateTrigger = BindingUpdateTrigger.OnSourceChanged;

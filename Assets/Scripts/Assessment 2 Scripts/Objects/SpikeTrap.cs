@@ -9,14 +9,16 @@ namespace Assessment_2_Scripts.Objects
 {
     public class SpikeTrap : MonoBehaviour
     {
-        [SerializeField] private float m_DamageAmount = 50f;
+        [SerializeField] protected float m_DamageAmount = 50f;
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        protected virtual void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.transform.parent.TryGetComponent<HealthComponent>(
-                    out var healthComponent)) //check if the parent object has a health component
+            if (collision.transform.TryGetComponent<HealthComponent>(
+                    out var health) //checks base obj 
+                || collision.transform.parent.TryGetComponent<HealthComponent>(
+                    out health)) //checks parent obj
             {
-                healthComponent.ApplyDamage(m_DamageAmount, this);
+                health.ApplyDamage(m_DamageAmount, this);
             }
         }
     }
