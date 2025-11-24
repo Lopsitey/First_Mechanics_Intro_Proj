@@ -1,7 +1,9 @@
 #region
 
 using System.Collections;
+using Assessment_2_Scripts.Player;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 #endregion
 
@@ -17,7 +19,7 @@ namespace Assessment_1_Scripts.Player
         [Header("Jumping")] [SerializeField] private float m_JumpStrength = 10;
 
         //the delay after a jump is executed - the minimum being ~ 0.15 due to the coyote time
-        [SerializeField] private float m_JumpDelayTime = 0.2f;
+        [SerializeField] private float m_JumpCooldown = 0.2f;
 
         //The minimum amount of time for a jump to be considered held
         [SerializeField] private float m_MinJumpCharge = 0.2f;
@@ -47,6 +49,18 @@ namespace Assessment_1_Scripts.Player
         [SerializeField] private float m_NudgeCooldown = 0.2f; //How long to wait between nudges
         private float m_NudgeTimer; //Tracks the cooldown
 
+        [Header("Dashing")] [SerializeField] private float m_DashForce = 25f;
+        [SerializeField] private float m_DashDuration = 0.25f; //How long the dash can occur for 
+        [SerializeField] private float m_DashCooldownTime = 0.2f; //Time before another dash can occur
+
+        [SerializeField]
+        private float m_MovementLockDuration = 0.5f; //Time that movement is locked after a dash is executed
+
+        [SerializeField] [Range(0, 0.5f)] private float m_PostDashFriction = 0.25f;
+        [SerializeField] [Range(0, 0.5f)] private float m_SlowMoScale = 0.25f; //a range between 0 and 0.5
+
+        [SerializeField] private Light2D m_AimLight;
+
         [Header("Miscellaneous")] [SerializeField]
         private Collider2D m_PlayerCollider;
 
@@ -63,21 +77,30 @@ namespace Assessment_1_Scripts.Player
 
         //time left for a buffered jump
         private float m_JumpBufferCounter;
+
+        //time left for the movement to be re-enabled
+        private float m_MovementLockCounter;
         //all counters decrement
+
+        private Vector3 m_MousePos;
 
         private JumpStates m_CurrentState;
         private float m_CurrentMoveSpeed;
         private float m_DefaultGravity;
+        private bool m_ApplyDashFriction;
         private GroundSensor m_GroundSensor;
 
         // ReSharper disable once InconsistentNaming
         private Rigidbody2D m_RB;
 
+        private Coroutine m_CDash;
         private Coroutine m_CMove;
         private float m_InMove;
+        private Camera m_Camera;
 
         private void Awake()
         {
+            m_Camera = Camera.main;
             m_RB = GetComponent<Rigidbody2D>();
             m_GroundSensor = GetComponentInChildren<GroundSensor>();
             m_CurrentState = JumpStates.Grounded;
@@ -108,7 +131,8 @@ namespace Assessment_1_Scripts.Player
                     break;
 
                 case JumpStates.Rising:
-                    //m_GroundSensor.CheckGround();//boxcast for an accurate ground check and for the input buffer
+                    //Updates the variables for the input buffer and jumping
+                    m_GroundSensor.CheckGround(); //boxcast for a more accurate ground check
                     if (m_NudgeTimer <= 0)
                         CheckNudges();
 
@@ -121,9 +145,6 @@ namespace Assessment_1_Scripts.Player
                         m_RB.gravityScale = m_ApexGravity; //reduces gravity at apex for a smoother transition
                         m_ApexGravityCounter = m_ApexGravityTime; //only ran when the state first changes
                     }
-                    //Landed early (immediate head bonk)
-                    else if (m_GroundSensor.m_IsGrounded)
-                        m_CurrentState = JumpStates.Grounded;
 
                     break;
 
@@ -137,16 +158,16 @@ namespace Assessment_1_Scripts.Player
                         //switches to falling state after apex time is over
                         m_CurrentState = JumpStates.Falling;
                     }
-                    else if (m_GroundSensor.m_IsGrounded) //Or if landed early for some reason
+                    else
                     {
-                        m_CurrentState = JumpStates.Falling; //Go to Falling for one frame
+                        if (m_GroundSensor.m_IsGrounded) //Or if landed early for some reason
+                            m_CurrentState = JumpStates.Falling; //Go to Falling for one frame
                         //Completes the cycle
                     }
 
                     break;
 
                 case JumpStates.Falling:
-                    m_GroundSensor.CheckGround();
                     //clamps vertical velocity to prevent extreme values
                     m_RB.linearVelocityY = Mathf.Clamp(m_RB.linearVelocityY, -12f, 30f);
 
@@ -154,7 +175,7 @@ namespace Assessment_1_Scripts.Player
                     m_CoyoteTimeCounter -= Time.fixedDeltaTime;
 
                     //When inevitably grounded
-                    if (m_GroundSensor.m_IsGrounded)
+                    if (m_GroundSensor.CheckGround(out _))
                     {
                         //Checks if landing while trying to stop OR turn around
                         bool tryingToStop = ALMOST_ZERO(m_InMove, 0.01f); //if within 0.01 of 0
@@ -173,6 +194,23 @@ namespace Assessment_1_Scripts.Player
                     }
 
                     break;
+
+                case JumpStates.PostDash:
+                    //Applies friction after the dash
+                    if (m_ApplyDashFriction)
+                        m_RB.linearVelocityX *= m_PostDashFriction;
+
+                    //While the dash is on cooldown
+                    if (m_CDash == null)
+                    {
+                        //Sets the state if you're not on the ground
+                        if (m_GroundSensor.CheckGround(out _) == false)
+                            m_CurrentState = m_RB.linearVelocityY > 0 ? JumpStates.Rising : JumpStates.Falling;
+                        else
+                            m_CurrentState = JumpStates.Grounded;
+                    }
+
+                    break;
             }
 
             if (m_JumpBufferCounter > 0) //if there is time left in the buffer
@@ -181,7 +219,7 @@ namespace Assessment_1_Scripts.Player
                 if (m_CanJump &&
                     m_GroundSensor.m_IsGrounded) //if the jump delay has ended and the player is near the ground
                 {
-                    StartCoroutine(DoJump(m_JumpDelayTime));
+                    StartCoroutine(C_DoJump(m_JumpCooldown));
                     m_JumpBufferCounter = 0f; //resets the buffer so you can't spam jump
                 }
             }
@@ -193,16 +231,28 @@ namespace Assessment_1_Scripts.Player
                     m_JumpHeldTime += Time.fixedDeltaTime;
                     if (m_JumpHeldTime >= m_MinJumpCharge)
                     {
-                        m_RB.AddForce(Vector2.up * m_JumpStrength,
+                        //the only time I should be using AddForce
+                        m_RB.AddForce(Vector2.up * (m_JumpStrength * 2.5f),
                             ForceMode2D.Force); //applies jump force while the key is held
                     }
                 }
                 else if ((m_JumpHeldTime >= m_MaxJumpCharge) && m_CanJump)
                 {
-                    StartCoroutine(DoJump(m_JumpDelayTime, false));
+                    StartCoroutine(C_DoJump(m_JumpCooldown, false));
                     m_JumpHeld = false;
                 }
             }
+
+            if (m_MovementLockCounter > 0) //prevents movement while active
+            {
+                m_MovementLockCounter -= Time.fixedDeltaTime;
+            }
+        }
+
+        private void Update()
+        {
+            if (m_CurrentState == JumpStates.Aiming)
+                Aim();
         }
 
         /// <summary>
@@ -218,21 +268,33 @@ namespace Assessment_1_Scripts.Player
             while (m_InMove != 0)
             {
                 yield return new WaitForFixedUpdate();
-                // Determines which type of speed to use
-                m_CurrentMoveSpeed = m_GroundSensor.m_IsGrounded ? m_GroundMoveSpeed : m_AirMoveSpeed;
-                m_RB.linearVelocityX = m_CurrentMoveSpeed * m_InMove;
+
+                //Prevents movement if dashing
+                if (!(m_MovementLockCounter > 0))
+                {
+                    //Determines which type of speed to use
+                    m_CurrentMoveSpeed = m_GroundSensor.m_IsGrounded ? m_GroundMoveSpeed : m_AirMoveSpeed;
+                    m_RB.linearVelocityX = m_CurrentMoveSpeed * m_InMove;
+                }
             }
 
             //if not moving, set the coroutine reference to null so it can be started again
             m_CMove = null;
         }
 
-        private IEnumerator DoJump(float delay, bool tap = true)
+        /// <summary>
+        /// Handles the force of tap jumps, unsetting the coyote timer and starting the jump cooldown 
+        /// </summary>
+        /// <param name="delay">The jump cooldown</param>
+        /// <param name="tap">False by default for tap, true else for held jumps</param>
+        /// <returns></returns>
+        private IEnumerator C_DoJump(float delay, bool tap = true)
         {
             if (tap)
             {
-                m_RB.linearVelocityY = 0f;
-                m_RB.AddForce(Vector2.up * m_JumpStrength, ForceMode2D.Impulse);
+                //This is the most precise way for a normal platformer, it overwrites velocity, so I don't need to reset it
+                m_RB.linearVelocity = new Vector2(m_RB.linearVelocity.x, m_JumpStrength);
+                //add force ForceMode2D.Impulse is only really good for balloons, 3D or ragdoll physics stuff
             }
 
             m_CoyoteTimeCounter = 0f;
@@ -265,7 +327,9 @@ namespace Assessment_1_Scripts.Player
             Grounded,
             Rising,
             Apex,
-            Falling
+            Falling,
+            Aiming,
+            PostDash
         }
 
 
@@ -307,10 +371,75 @@ namespace Assessment_1_Scripts.Player
             }
         }
 
+        /// <summary>
+        /// Handles the rotation of the aiming light 
+        /// </summary>
+        private void Aim()
+        {
+            if (m_Camera)
+            {
+                m_MousePos = m_Camera.ScreenToWorldPoint(Input.mousePosition);
+            }
+
+            //Calculates the vector difference between the player and the mouse
+            Vector2 lookDir = (m_MousePos - transform.position).normalized;
+            //Positive would be left, negative for right
+
+            //Smoothly rotates from the default (up direction - 0,0,0) to the target direction
+            Quaternion targetRot = Quaternion.FromToRotation(Vector3.up, lookDir);
+
+            //Rotates the light around the z axis if it exists
+            if (m_AimLight)
+            {
+                m_AimLight.transform.rotation = targetRot;
+            }
+        }
+
+        /// <summary>
+        /// Executes the dash after the aiming state, uses two delays for friction and a cooldown 
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator C_DoDash() //this is a coroutine because it is a sequence which will never be queried 
+        {
+            //Resets time and physics 
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = 0.02f;
+
+            Vector3 rawDir = m_MousePos - transform.position;
+            //Flattens the z so it doesn't interfere with calculations
+            rawDir.z = 0;
+            Vector2 direction = rawDir.normalized;
+            //Applies the force in the direction directly to the linearVelocity Vector2
+            m_RB.linearVelocity = direction * m_DashForce;
+
+            //resets the timer for the movement being locked post-dash
+            m_MovementLockCounter = m_MovementLockDuration;
+
+            if (m_AimLight) m_AimLight.gameObject.SetActive(false);
+
+            //How long to wait before applying friction 
+            yield return new WaitForSeconds(m_DashDuration);
+
+            m_ApplyDashFriction = true;
+            m_CurrentState = JumpStates.PostDash;
+
+            const float dashFrictionTime = 0.2f;
+            yield return new WaitForSeconds(dashFrictionTime);
+
+            m_ApplyDashFriction = false;
+            //Time before another dash can happen
+            yield return new WaitForSeconds(m_DashCooldownTime - dashFrictionTime);
+
+            //allows the coroutine to be started again using the ??= operator
+            m_CDash = null;
+        }
+
         #region InputFunctions
 
         public void SetInMove(float direction)
         {
+            //Prevents movement when a dash is executed
+
             m_InMove = direction;
             if (m_InMove != 0f) //if moving
             {
@@ -319,13 +448,17 @@ namespace Assessment_1_Scripts.Player
             }
         }
 
-        public void JumpStarted() //false by default for tap, anything else for hold
+        public void JumpStarted()
         {
+            //Prevents jumping whilst aiming for a dash
+            if (m_CurrentState == JumpStates.Aiming)
+                return;
+
             if (m_CanJump)
             {
                 if (m_GroundSensor.m_IsGrounded || m_CoyoteTimeCounter > 0f)
                 {
-                    StartCoroutine(DoJump(m_JumpDelayTime)); //applies jump velocity and delay
+                    StartCoroutine(C_DoJump(m_JumpCooldown)); //applies jump velocity and delay
                     m_JumpHeld = true; //allows the held jump to end without needing to be grounded
                     m_JumpHeldTime = 0f; //reset the help time when back on the ground
                 }
@@ -353,6 +486,32 @@ namespace Assessment_1_Scripts.Player
                     // Allows the player to drop through the platform
                     StartCoroutine(C_DropThroughPlatform(platformCollider));
                 }
+            }
+        }
+
+        public void AimStarted()
+        {
+            //if the dash isn't on cooldown
+            if (m_CDash == null)
+            {
+                m_CurrentState = JumpStates.Aiming;
+                //Slows down time
+                Time.timeScale = m_SlowMoScale;
+                //Ensures smooth physics
+                Time.fixedDeltaTime = 0.02f * m_SlowMoScale;
+
+                //Turns on the light
+                if (m_AimLight) m_AimLight.gameObject.SetActive(true);
+            }
+        }
+
+        public void AimEnded()
+        {
+            //if you were aiming - not on dash cooldown or anything
+            if (m_CurrentState == JumpStates.Aiming)
+            {
+                //only start a new coroutine if one isn't already running
+                m_CDash ??= StartCoroutine(C_DoDash());
             }
         }
 
