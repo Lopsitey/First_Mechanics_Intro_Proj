@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Assessment_1_Scripts.Managers
+namespace Assessment_2_Scripts.Managers
 {
     /// <summary>
     /// A persistent Singleton base class which

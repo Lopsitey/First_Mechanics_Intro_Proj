@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Assessment_1_Scripts.Objects
+namespace Assessment_2_Scripts.Objects
 {
     public class CameraInitialisation : MonoBehaviour
     {

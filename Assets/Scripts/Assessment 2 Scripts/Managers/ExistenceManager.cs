@@ -1,13 +1,13 @@
 #region
 
-using Assessment_1_Scripts.Objects;
-using Assessment_1_Scripts.Player;
-using Assessment_1_Scripts.UI.Managers.HUD;
+using Assessment_2_Scripts.Objects;
+using Assessment_2_Scripts.Player;
+using Assessment_2_Scripts.UI.Managers.HUD;
 using UnityEngine;
 
 #endregion
 
-namespace Assessment_1_Scripts.Managers
+namespace Assessment_2_Scripts.Managers
 {
     //doesn't need to inherit from MonoBehaviour because Singleton already does
     /// <summary>

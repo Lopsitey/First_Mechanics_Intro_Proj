@@ -1,5 +1,6 @@
 #region
 
+using Assessment_2_Scripts.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +34,8 @@ namespace Assessment_1_Scripts.Player
             m_ActionMap.Default.Jump.canceled += Handle_JumpCancelled;
             m_ActionMap.Default.Interact.performed += Handle_InteractPerformed;
             m_ActionMap.Default.MoveDown.performed += Handle_MoveDownPerformed;
+            m_ActionMap.Default.Aim.started += Handle_AimStarted;
+            m_ActionMap.Default.Aim.canceled += Handle_AimEnded;
         }
 
         private void OnDisable()
@@ -79,6 +82,16 @@ namespace Assessment_1_Scripts.Player
         private void Handle_MoveDownPerformed(InputAction.CallbackContext context)
         {
             m_CharacterMovement.MoveDown();
+        }
+
+        private void Handle_AimStarted(InputAction.CallbackContext obj)
+        {
+            m_CharacterMovement.AimStarted();
+        }
+
+        private void Handle_AimEnded(InputAction.CallbackContext obj)
+        {
+            m_CharacterMovement.AimEnded();
         }
 
         #endregion

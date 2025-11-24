@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 #endregion
 
-namespace Assessment_1_Scripts.UI.DynamicUI
+namespace Assessment_2_Scripts.UI.DynamicUI
 {
     public class DynamicScript : MonoBehaviour
     {

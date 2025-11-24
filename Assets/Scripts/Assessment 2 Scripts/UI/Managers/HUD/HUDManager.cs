@@ -1,13 +1,13 @@
 #region
 
-using Assessment_1_Scripts.Managers;
-using Assessment_1_Scripts.Player;
+using Assessment_2_Scripts.Managers;
+using Assessment_2_Scripts.Player;
 using Unity.Properties;
 using UnityEngine.UIElements;
 
 #endregion
 
-namespace Assessment_1_Scripts.UI.Managers.HUD
+namespace Assessment_2_Scripts.UI.Managers.HUD
 {
     public class HUDManager : Singleton<HUDManager>
     {
@@ -15,7 +15,7 @@ namespace Assessment_1_Scripts.UI.Managers.HUD
         {
             if (playerTransform) //essentially if the player exists
             {
-                # region UI Setup
+                # region Coordinates UI Setup
 
                 VisualElement container = new VisualElement();
                 container.name = "container";

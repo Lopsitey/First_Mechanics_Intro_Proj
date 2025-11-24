@@ -1,4 +1,4 @@
-﻿namespace Assessment_1_Scripts
+﻿namespace Assessment_2_Scripts.Interfaces
 {
     public interface IInteractable
     {

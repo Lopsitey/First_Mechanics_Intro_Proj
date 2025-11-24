@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Assessment_1_Scripts.Player
+namespace Assessment_2_Scripts.Player
 {
     public class CollisionDetector : MonoBehaviour
     {

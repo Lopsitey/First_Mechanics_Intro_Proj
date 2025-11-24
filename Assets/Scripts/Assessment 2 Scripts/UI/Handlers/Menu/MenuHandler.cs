@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 #endregion
 
-namespace Assessment_1_Scripts.UI.Handlers.Menu
+namespace Assessment_2_Scripts.UI.Handlers.Menu
 {
     public class MenuHandler : MonoBehaviour
     {

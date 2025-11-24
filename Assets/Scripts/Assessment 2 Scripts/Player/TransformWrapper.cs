@@ -1,7 +1,11 @@
-﻿using Unity.Properties;
+﻿#region
+
+using Unity.Properties;
 using UnityEngine;
 
-namespace Assessment_1_Scripts.Player
+#endregion
+
+namespace Assessment_2_Scripts.Player
 {
     public class TransformWrapper : MonoBehaviour
     {

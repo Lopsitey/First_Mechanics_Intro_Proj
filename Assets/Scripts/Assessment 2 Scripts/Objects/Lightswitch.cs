@@ -1,10 +1,11 @@
 ﻿#region
 
+using Assessment_2_Scripts.Interfaces;
 using UnityEngine;
 
 #endregion
 
-namespace Assessment_1_Scripts.Objects
+namespace Assessment_2_Scripts.Objects
 {
     public class Lightswitch : MonoBehaviour, IInteractable
     {

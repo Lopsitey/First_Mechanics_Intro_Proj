@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-namespace Assessment_1_Scripts.Player
+namespace Assessment_2_Scripts.Player
 {
     public class GroundSensor : MonoBehaviour
     {
@@ -25,14 +25,7 @@ namespace Assessment_1_Scripts.Player
         //The amount of a ledge you can clip through with your legs
         [SerializeField] private float m_LegHeight = 0.34f;
 
-        private float m_BodyHalfWidth;
         private Collider2D m_HitComp;
-        private ContactPoint2D? m_Contact;
-
-        private void Awake()
-        {
-            m_BodyHalfWidth = m_BodyWidth / 2;
-        }
 
         public bool m_IsGrounded { get; private set; } = true; //on the ground by default
 
@@ -67,7 +60,7 @@ namespace Assessment_1_Scripts.Player
         /// <summary>
         /// Checks if the edges of your head clip a corner  
         /// </summary>
-        /// <returns>The sie of your head which clipped the corner or 3 if it was a flat hit</returns>
+        /// <returns>The side of your head which clipped the corner (1-centre, 2-left, 3-right)</returns>
         public int CheckCeiling()
         {
             // Adjust the '0.5f' to match the top of your sprite's head
@@ -126,7 +119,6 @@ namespace Assessment_1_Scripts.Player
             bool hitFeet = Physics2D.Raycast(feetOrigin, Vector2.up, m_LedgeRayLength, m_GroundLayer);
 
             return hitFeet && !hitLegs;
-            ;
         }
 
         void OnDrawGizmos() //Visualises the boxcast when the gizmos overlay is enabled
