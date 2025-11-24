@@ -1,15 +1,37 @@
-VisualElement {}
-#container{
+VisualElement {
+}
+
+#container {
     width: 100%;
     height: 100%;
     padding-top: 2%;
 }
 
-.positionlabelcontainer{
+.positionlabelcontainer {
     height: 10;
     width: 25%;
-    margin:2%;
-    align-self:flex-start;
+    margin: 2%;
+    align-self: flex-start;
     align-content: flex-start;
     flex-direction: row;
+}
+
+.healthbarcontainer {
+    width: 33%;
+    height: 5%;
+    background-color: grey;
+    border-radius: 10px;
+    border-width: 3px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-left: 2%;
+    margin-bottom: 2.5%;
+}
+
+.healthfill {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    background-color: green;
 }

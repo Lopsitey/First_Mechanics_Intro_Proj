@@ -11,15 +11,16 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
 {
     public class HUDManager : Singleton<HUDManager>
     {
-        public void CreateHUD(TransformWrapper playerTransform)
+        public void CreateHUD(PlayerWrapper player)
         {
-            if (playerTransform) //essentially if the player exists
+            if (player) //essentially if the player exists
             {
-                # region Coordinates UI Setup
-
+                //main container element
                 VisualElement container = new VisualElement();
                 container.name = "container";
-                GetComponent<UIDocument>().rootVisualElement.Add(container);
+                GetComponent<UIDocument>().rootVisualElement.Add(container); //adds it to the document
+
+                #region Coordinates
 
                 VisualElement labelcontainer = new VisualElement();
                 labelcontainer.name = "labelcontainer";
@@ -38,13 +39,10 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
                 yLabel.AddToClassList("positionlabel");
                 labelcontainer.Add(yLabel);
 
-                # endregion
-
-                #region Binding Setup
 
                 DataBinding xBinding = new DataBinding
                 {
-                    dataSource = playerTransform,
+                    dataSource = player,
                     dataSourcePath = new PropertyPath("xPos"),
                     bindingMode = BindingMode.ToTarget
                 };
@@ -57,7 +55,7 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
 
                 DataBinding yBinding = new DataBinding
                 {
-                    dataSource = playerTransform,
+                    dataSource = player,
                     dataSourcePath = new PropertyPath("yPos"),
                     bindingMode = BindingMode.ToTarget
                 };
@@ -65,6 +63,36 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
                 yBinding.sourceToUiConverters.AddConverter((ref float value) =>
                     $"Y: {value:F2}");
                 yLabel.SetBinding("text", yBinding);
+
+                #endregion
+
+                #region Healthbar
+
+                VisualElement healthContainer = new VisualElement();
+                healthContainer.name = "healthContainer";
+                healthContainer.AddToClassList("healthbarcontainer");
+                container.Add(healthContainer);
+
+                VisualElement healthFill = new VisualElement();
+                healthFill.name = "healthFill";
+                healthFill.AddToClassList("healthfill");
+                healthContainer.Add(healthFill);
+
+                DataBinding healthBinding = new DataBinding
+                {
+                    dataSource = player,
+                    dataSourcePath = new PropertyPath("HealthPercent"), //Takes the health var from the wrapper
+                    bindingMode = BindingMode.ToTarget
+                };
+
+
+                xBinding.updateTrigger = BindingUpdateTrigger.OnSourceChanged;
+                //Converts the health into a CSS length percentage
+                healthBinding.sourceToUiConverters.AddConverter((ref float currentHealth) =>
+                    new StyleLength(new Length(currentHealth, LengthUnit.Percent)));
+
+                //Binds to the width property of the style
+                healthFill.SetBinding("style.width", healthBinding);
 
                 #endregion
             }

@@ -44,8 +44,8 @@ namespace Assessment_2_Scripts.Managers
                 m_PlayerRef.GetComponent<HealthComponent>().OnDeath += SpawnPlayer; //resubscribes to death event
 
                 m_HUD.gameObject.SetActive(true);
-                //create HUD for player passing TransformWrapper for data binding
-                m_HUD.CreateHUD(m_PlayerRef.GetComponent<TransformWrapper>());
+                //create HUD for player passing PlayerWrapper for data binding
+                m_HUD.CreateHUD(m_PlayerRef.GetComponent<PlayerWrapper>());
 
                 if (m_MainCamera.TryGetComponent<CameraInitialisation>(out var cameraInit))
                     cameraInit.Init(m_PlayerRef.transform); //initialises the camera to follow the player

@@ -23,6 +23,8 @@ namespace Assessment_2_Scripts.Player
 
         [SerializeField] private float m_MaxHealth = 100f;
         private float m_CurrentHealth;
+        public float GetHealth => m_CurrentHealth; //essentially a get function disguised as a variable
+        public float GetMaxHealth => m_MaxHealth;
 
         private void Start()
         {
