@@ -1,12 +1,12 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements"
-         noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+<ui:UXML xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
          editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Elements/DeathMenu/DeathMenuStyles.uss?fileID=7433441132597879392&amp;guid=08dcc9bcd8668e94f9467e28babbe70e&amp;type=3#DeathMenuStyles"/>
     <ui:VisualElement name="container"
                       style="flex-grow: 1; background-color: rgba(170, 83, 83, 0.82); opacity: 0.8; display: flex; visibility: visible; overflow: visible;">
         <ui:VisualElement name="Background"
                           style="flex-grow: 1; top: 10%; width: 80%; align-items: stretch; align-self: center; height: auto; max-height: 80%; background-color: rgb(168, 25, 25); border-top-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; border-bottom-left-radius: 20px;">
-            <ui:Label text="You Died!" class="deathtext"/>
+            <ui:Label text="You Died!" class="title"/>
+            <ui:Label text="Label" name="DeathLbl" class="deathtext"/>
             <ui:GroupBox
                     style="justify-content: space-evenly; align-self: center; align-content: center; align-items: center; width: 60%; height: 40%;">
                 <ui:Button text="Respawn" name="RespawnBtn" class="deathbutton"/>

@@ -11,21 +11,29 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
 {
     public class HUDManager : Singleton<HUDManager>
     {
+        private VisualElement m_CurrentContainer;
+
         public void CreateHUD(PlayerWrapper player)
         {
+            //Kills old HUD is one already exists
+            if (m_CurrentContainer != null)
+            {
+                m_CurrentContainer.RemoveFromHierarchy();
+            }
+
             if (player) //essentially if the player exists
             {
                 //main container element
-                VisualElement container = new VisualElement();
-                container.name = "container";
-                GetComponent<UIDocument>().rootVisualElement.Add(container); //adds it to the document
+                m_CurrentContainer = new VisualElement();
+                m_CurrentContainer.name = "container";
+                GetComponent<UIDocument>().rootVisualElement.Add(m_CurrentContainer); //adds it to the document
 
                 #region Coordinates
 
                 VisualElement labelcontainer = new VisualElement();
                 labelcontainer.name = "labelcontainer";
                 labelcontainer.AddToClassList("positionlabelcontainer");
-                container.Add(labelcontainer);
+                m_CurrentContainer.Add(labelcontainer);
 
                 Label xLabel = new Label();
                 xLabel.name = "xlabel";
@@ -71,7 +79,7 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
                 VisualElement healthContainer = new VisualElement();
                 healthContainer.name = "healthContainer";
                 healthContainer.AddToClassList("healthbarcontainer");
-                container.Add(healthContainer);
+                m_CurrentContainer.Add(healthContainer);
 
                 VisualElement healthFill = new VisualElement();
                 healthFill.name = "healthFill";
@@ -96,6 +104,10 @@ namespace Assessment_2_Scripts.UI.Managers.HUD
 
                 #endregion
             }
+        }
+
+        public void UpdateHUD(PlayerWrapper player)
+        {
         }
     }
 }

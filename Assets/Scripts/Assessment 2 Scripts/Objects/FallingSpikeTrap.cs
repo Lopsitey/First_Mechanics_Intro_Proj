@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections;
+using Assessment_2_Scripts.Managers;
 using Assessment_2_Scripts.Utilities;
 using UnityEngine;
 
@@ -10,11 +11,13 @@ namespace Assessment_2_Scripts.Objects
 {
     public class FallingSpikeTrap : SpikeTrap
     {
-        [Header("Falling Settings")] [SerializeField]
+        [Header("Spike Settings")] [SerializeField]
         private float m_ReactionTime = 0.5f; //the delay before the spike falls
 
         [SerializeField] private float m_FallGravity = 1;
         [SerializeField] private float m_DestroyDelay = 0.25f;
+        [SerializeField] private AudioClip m_ShakeClip;
+        [SerializeField] private AudioClip m_HitClip;
 
         [Header("Miscellaneous")] [SerializeField]
         private LayerMask m_GroundLayer;
@@ -55,9 +58,11 @@ namespace Assessment_2_Scripts.Objects
                 if (other.gameObject == m_Player)
                 {
                     base.OnCollisionEnter2D(other);
+
                     //disables collision so the spike can fall through the player slightly
                     Physics2D.IgnoreCollision(other.collider, other.otherCollider, true);
-                    StartCoroutine(DestructionDelay());
+                    //Makes the spike hit look a bit better by disabling collision and delaying death
+                    Destroy(gameObject, m_DestroyDelay);
                 }
 
                 if (GameHelpers.IsLayerInMask(other.gameObject.layer, m_GroundLayer))
@@ -68,6 +73,7 @@ namespace Assessment_2_Scripts.Objects
                     }
                 }
 
+                AudioManager.Instance.PlaySFX(m_HitClip, 0.4f);
                 m_CurrentState = TrapState.Fell; //prevents checking collisions multiple times
             }
         }
@@ -78,6 +84,8 @@ namespace Assessment_2_Scripts.Objects
         /// <returns></returns>
         private IEnumerator AlarmAndFall()
         {
+            //plays audio when disturbed
+            AudioManager.Instance.PlaySFX(m_ShakeClip, 0.1f); //very loud clip made quiet
             // Visual shake logic here...
             yield return new WaitForSeconds(m_ReactionTime);
 
@@ -87,16 +95,6 @@ namespace Assessment_2_Scripts.Objects
             m_RB.mass = m_Player.GetComponent<Rigidbody2D>().mass * 100; //ensures the spike has unstoppable mass
             m_RB.freezeRotation = true; //makes the spike fall straight
             m_CurrentState = TrapState.Falling;
-        }
-
-        /// <summary>
-        /// Makes the spike hit look a bit better by disabling collision and delaying death
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerator DestructionDelay()
-        {
-            yield return new WaitForSeconds(m_DestroyDelay);
-            Destroy(gameObject);
         }
     }
 }

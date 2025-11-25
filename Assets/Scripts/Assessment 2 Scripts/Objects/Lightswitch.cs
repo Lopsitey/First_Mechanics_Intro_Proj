@@ -1,6 +1,7 @@
 ﻿#region
 
 using Assessment_2_Scripts.Interfaces;
+using Assessment_2_Scripts.Managers;
 using UnityEngine;
 
 #endregion
@@ -17,6 +18,8 @@ namespace Assessment_2_Scripts.Objects
 
         [Header("Lever Settings")] [SerializeField]
         private GameObject m_LeverPivot;
+
+        [SerializeField] public AudioClip m_ToggleClip;
 
         [Header("Door Trigger Settings")] [SerializeField]
         private DoorController m_Doors;
@@ -36,11 +39,13 @@ namespace Assessment_2_Scripts.Objects
                 //does nothing if the doors are already moving
                 if (m_Doors.IsMoving())
                     return;
+
                 //triggers the door if there is one linked to the lightswitch
-                else
-                    m_Doors.Interaction();
+                m_Doors.Interaction();
             }
 
+            //plays audio when toggled
+            AudioManager.Instance.PlaySFX(m_ToggleClip);
             m_Toggled = !m_Toggled;
 
             m_LeverPivot.transform.rotation = m_Toggled
