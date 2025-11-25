@@ -1,5 +1,6 @@
 #region
 
+using Assessment_1_Scripts.Player;
 using Assessment_2_Scripts.Player;
 using Assessment_2_Scripts.UI.Managers.Death_Menu;
 using Assessment_2_Scripts.UI.Managers.HUD;
@@ -16,7 +17,7 @@ namespace Assessment_2_Scripts.Managers
     /// </summary>
     public class ExistenceManager : Singleton<ExistenceManager>
     {
-        //TODO public event Action OnPlayerSpawned; this should be done in the future to decouple all of these systems from the manager
+        //TODO public event Action OnPlayerSpawned;
 
         [SerializeField] private CinemachineCamera m_PlayerCamera; //the CineMachine camera which follows the player
 
@@ -26,33 +27,35 @@ namespace Assessment_2_Scripts.Managers
 
         [SerializeField] private DeathMenuManager m_DeathMenu;
 
+        [SerializeField] private AudioManager m_AudioManager;
+
         private GameObject m_PlayerRef; //holds a reference to the player once spawned
 
         void Start()
         {
             SpawnPlayer();
-            //create HUD once for player passing PlayerWrapper for data binding
-            m_HUD.CreateHUD(m_PlayerRef.GetComponent<PlayerWrapper>());
             //creates the respawn menu once
-            m_DeathMenu.CreateMenu(m_PlayerRef.GetComponent<HealthComponent>());
+            m_DeathMenu.Init(m_PlayerRef.GetComponent<HealthComponent>());
         }
 
-        public void SpawnPlayer(MonoBehaviour instigator = null)
+        //TODO decouple all of these systems from the manager
+        public void SpawnPlayer()
         {
-            if (instigator != null) //killed by something
-            {
-                m_HUD.gameObject.SetActive(false); //deactivates HUD on death
-            }
-
             m_PlayerRef = Instantiate(m_PlayerPrefab); //spawn player
 
             if (m_PlayerRef)
             {
+                m_PlayerCamera.Follow = m_PlayerRef.transform; //initialises the camera to follow the player
                 m_PlayerRef.GetComponent<CharacterManager>().Init(); //initialise player character manager
 
-                m_HUD.gameObject.SetActive(true); //toggles HUD on again
+                //creates HUD player passing PlayerWrapper for data binding
+                m_HUD.CreateHUD(m_PlayerRef.GetComponent<PlayerWrapper>());
 
-                m_PlayerCamera.Follow = m_PlayerRef.transform; //initialises the camera to follow the player
+                //updates the death menu with the new health comp ref
+                if (m_DeathMenu != null)
+                    m_DeathMenu.Init(m_PlayerRef.GetComponent<HealthComponent>());
+
+                m_AudioManager.Init(m_PlayerRef.GetComponent<CharacterMovement>());
             }
         }
 

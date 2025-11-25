@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections;
 using Assessment_2_Scripts.Player;
 using Assessment_2_Scripts.Utilities;
@@ -51,8 +52,11 @@ namespace Assessment_1_Scripts.Player
         private float m_NudgeTimer; //Tracks the cooldown
 
         [Header("Dashing")] [SerializeField] private float m_DashForce = 25f;
+
         [SerializeField] private float m_DashDuration = 0.25f; //How long the dash can occur for 
-        [SerializeField] private float m_DashCooldownTime = 0.2f; //Time before another dash can occur
+
+        //Must be a minimum of 0.2 for friction calculations to work
+        [SerializeField] [Range(0.2f, 2)] private float m_DashCooldownTime = 0.2f; //Time before another dash can occur
 
         [SerializeField]
         private float m_MovementLockDuration = 0.5f; //Time that movement is locked after a dash is executed
@@ -88,7 +92,7 @@ namespace Assessment_1_Scripts.Player
         private JumpStates m_CurrentState;
         private float m_CurrentMoveSpeed;
         private float m_DefaultGravity;
-        private bool m_ApplyDashFriction;
+        private bool m_PostDashFrictionEnabled;
         private GroundSensor m_GroundSensor;
 
         // ReSharper disable once InconsistentNaming
@@ -98,6 +102,9 @@ namespace Assessment_1_Scripts.Player
         private Coroutine m_CMove;
         private float m_InMove;
         private Camera m_Camera;
+        public event Action OnJump;
+        public event Action OnDash;
+        public event Action OnAim;
 
         private void Awake()
         {
@@ -195,23 +202,6 @@ namespace Assessment_1_Scripts.Player
                     }
 
                     break;
-
-                case JumpStates.PostDash:
-                    //Applies friction after the dash
-                    if (m_ApplyDashFriction)
-                        m_RB.linearVelocityX *= m_PostDashFriction;
-
-                    //While the dash is on cooldown
-                    if (m_CDash == null)
-                    {
-                        //Sets the state if you're not on the ground
-                        if (m_GroundSensor.CheckGround(out _) == false)
-                            m_CurrentState = m_RB.linearVelocityY > 0 ? JumpStates.Rising : JumpStates.Falling;
-                        else
-                            m_CurrentState = JumpStates.Grounded;
-                    }
-
-                    break;
             }
 
             if (m_JumpBufferCounter > 0) //if there is time left in the buffer
@@ -248,6 +238,13 @@ namespace Assessment_1_Scripts.Player
             {
                 m_MovementLockCounter -= Time.fixedDeltaTime;
             }
+
+            //if just dashed and the dash is on cooldown
+            if (m_PostDashFrictionEnabled && m_CDash != null)
+            {
+                //Applies friction after the dash
+                m_RB.linearVelocityX *= m_PostDashFriction;
+            }
         }
 
         private void Update()
@@ -283,6 +280,7 @@ namespace Assessment_1_Scripts.Player
         /// <returns></returns>
         private IEnumerator C_DoJump(float delay, bool tap = true)
         {
+            OnJump?.Invoke(); //starts the jump vfx when you actually jump
             if (tap)
             {
                 //This is the most precise way for a normal platformer, it overwrites velocity, so I don't need to reset it
@@ -321,8 +319,9 @@ namespace Assessment_1_Scripts.Player
             Rising,
             Apex,
             Falling,
-            Aiming,
-            PostDash
+
+            Aiming
+            //removed the post-dash state as is works netter as a bool
         }
 
 
@@ -394,6 +393,8 @@ namespace Assessment_1_Scripts.Player
         /// <returns></returns>
         private IEnumerator C_DoDash() //this is a coroutine because it is a sequence which will never be queried 
         {
+            OnDash?.Invoke(); //played the dashed vfx and stops the charging vfx
+
             //Resets time and physics 
             Time.timeScale = 1f;
             Time.fixedDeltaTime = 0.02f;
@@ -410,18 +411,24 @@ namespace Assessment_1_Scripts.Player
 
             if (m_AimLight) m_AimLight.gameObject.SetActive(false);
 
+            //Sets the state if you're not on the ground
+            if (m_GroundSensor.CheckGround(out _) == false)
+                m_CurrentState = m_RB.linearVelocityY > 0 ? JumpStates.Rising : JumpStates.Falling;
+            else
+                m_CurrentState = JumpStates.Grounded;
+
             //How long to wait before applying friction 
             yield return new WaitForSeconds(m_DashDuration);
 
-            m_ApplyDashFriction = true;
-            m_CurrentState = JumpStates.PostDash;
+            m_PostDashFrictionEnabled = true;
 
-            const float dashFrictionTime = 0.2f;
-            yield return new WaitForSeconds(dashFrictionTime);
+            //must be at least 0.2f
+            const float postDashFrictionTime = 0.2f;
+            yield return new WaitForSeconds(postDashFrictionTime);
+            m_PostDashFrictionEnabled = false;
 
-            m_ApplyDashFriction = false;
-            //Time before another dash can happen
-            yield return new WaitForSeconds(m_DashCooldownTime - dashFrictionTime);
+            //Time before another dash can happen - the minimum friction time
+            yield return new WaitForSeconds(m_DashCooldownTime - postDashFrictionTime);
 
             //allows the coroutine to be started again using the ??= operator
             m_CDash = null;
@@ -487,6 +494,7 @@ namespace Assessment_1_Scripts.Player
             //if the dash isn't on cooldown
             if (m_CDash == null)
             {
+                OnAim?.Invoke(); //plays the charging vfx so it starts its loop
                 m_CurrentState = JumpStates.Aiming;
                 //Slows down time
                 Time.timeScale = m_SlowMoScale;

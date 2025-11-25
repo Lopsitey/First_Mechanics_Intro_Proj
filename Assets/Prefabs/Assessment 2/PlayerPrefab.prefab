@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 244251608806345176}
   - component: {fileID: 1866935814712117696}
   - component: {fileID: 969958807700409231}
+  - component: {fileID: -6434082045462536703}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Player
@@ -94,7 +95,7 @@ MonoBehaviour:
   m_NudgeCooldown: 0.2
   m_DashForce: 20
   m_DashDuration: 0.4
-  m_DashCooldownTime: 0.5
+  m_DashCooldownTime: 1.25
   m_MovementLockDuration: 0.5
   m_PostDashFriction: 0.15
   m_SlowMoScale: 0.25
@@ -230,6 +231,29 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &-6434082045462536703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667636342438995758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6c52ce345a344c7af54524849915bc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DamageVFX: {fileID: 7149681571884862968, guid: b782d3011a592554bb510fafece4ecaf, type: 3}
+  m_DamageOffset: {x: 0, y: 0.5, z: 0}
+  m_DamageAnimationLength: 0.5
+  m_ChargingDashVFX: {fileID: 7696435126444027622, guid: a1b69a267f8f6614fa2c0b6e1736b434, type: 3}
+  m_ChargingDashOffset: {x: 0, y: 0.5, z: 0}
+  m_DashVFX: {fileID: 8459494006917467561, guid: e8d67529b25a63e48ac2b54b51f2eadc, type: 3}
+  m_DashOffset: {x: 0, y: 0.5, z: 0}
+  m_DashAnimationLength: 1
+  m_JumpVFX: {fileID: 8920591376978576679, guid: 108985324721d054885980e001c2c34d, type: 3}
+  m_JumpOffset: {x: 0, y: 0.5, z: 0}
+  m_JumpAnimationLength: 0.5
 --- !u!1 &2062927974038001864
 GameObject:
   m_ObjectHideFlags: 0

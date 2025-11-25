@@ -11,10 +11,11 @@ namespace Assessment_2_Scripts.UI.Managers.Death_Menu
 {
     public class DeathMenuManager : MonoBehaviour
     {
-        private UIDocument m_UIDocument;
-        private VisualElement m_DeathContainer;
+        private UIDocument m_UIDocument; //whole doc
+        private VisualElement m_DeathContainer; //main container
         private Button m_RespawnButton;
         private Button m_QuitButton;
+        private Label m_DeathLbl; //the "you were killed by" text 
 
         private void Awake()
         {
@@ -26,6 +27,7 @@ namespace Assessment_2_Scripts.UI.Managers.Death_Menu
             m_DeathContainer = container.Q<VisualElement>("container");
             m_RespawnButton = container.Q<Button>("RespawnBtn");
             m_QuitButton = container.Q<Button>("QuitBtn");
+            m_DeathLbl = container.Q<Label>("DeathLbl");
 
             // Hide it by default
             m_DeathContainer.style.display = DisplayStyle.None;
@@ -46,7 +48,7 @@ namespace Assessment_2_Scripts.UI.Managers.Death_Menu
         }
 
         //Finds the new health comp when the player spawns
-        public void CreateMenu(HealthComponent healthComp)
+        public void Init(HealthComponent healthComp)
         {
             healthComp.OnDeath += ShowDeathScreen;
         }
@@ -55,6 +57,7 @@ namespace Assessment_2_Scripts.UI.Managers.Death_Menu
         private void ShowDeathScreen(MonoBehaviour instigator)
         {
             m_DeathContainer.style.display = DisplayStyle.Flex;
+            m_DeathLbl.text = "You were killed by: " + instigator.gameObject.name + "!";
         }
 
         //When the respawn button is pressed

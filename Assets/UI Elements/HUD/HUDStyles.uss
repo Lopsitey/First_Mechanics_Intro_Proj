@@ -19,7 +19,8 @@ VisualElement {
 .healthbarcontainer {
     width: 33%;
     height: 5%;
-    background-color: grey;
+    background-color: black;
+    border-color: grey;
     border-radius: 10px;
     border-width: 3px;
     position: absolute;

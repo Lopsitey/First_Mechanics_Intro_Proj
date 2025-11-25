@@ -17,7 +17,7 @@ VisualElement {
     font-size: 200%;
 }
 
-.deathtext {
+.title {
     margin-top: 5px;
     -unity-text-align: upper-center;
     color: rgb(0, 0, 0);
@@ -31,4 +31,11 @@ VisualElement {
     width: 105%;
     border-color: white;
     border-width: 2.5px;
+}
+
+.deathtext {
+    -unity-text-align: upper-center;
+    font-size: 200%;
+    margin-top: 2.5%;
+    -unity-font-style: italic;
 }
