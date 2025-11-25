@@ -11,7 +11,7 @@ using UnityEngine.Rendering.Universal;
 
 namespace Assessment_1_Scripts.Player
 {
-    public class CharacterMovement : MonoBehaviour
+    public class ADDED_DASH : MonoBehaviour
     {
         [Header("Movement Speed")] [SerializeField]
         private float m_GroundMoveSpeed = 5;
